@@ -1,0 +1,164 @@
+@import "mixins";
+@import "variables";
+
+.f-header {
+  @include BoxShadow(4);
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+  align-items: center;
+  height: $header-height;
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  z-index: 10;
+  justify-content: space-between;
+  background-color: $header-bg;
+
+  .logo-link {
+    z-index: 10;
+  }
+
+  .logo {
+    width: $logo-width;
+    margin-left: $logo-margin-left;
+    vertical-align: middle;
+  }
+
+  .pages-container {
+    flex: 0 1 100%;
+    text-align: center;
+    height: $header-height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0px ($logo-margin-left + $logo-width);
+  }
+
+  .right {
+    position: relative;
+  }
+
+  .login {
+    margin-right: 20px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 20px;
+    cursor: pointer;
+  }
+
+  .menu {
+    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.14),
+      0 5px 8px -1px rgba(0, 0, 0, 0.2);
+    border-radius: 0px 0px 2px 2px;
+    position: absolute;
+    right: 0px;
+    margin-right: 20px;
+    top: 45px;
+    background-color: white;
+    border-top: 0px;
+    max-height: 0px;
+    overflow: hidden;
+    width: 120px;
+    box-sizing: border-box;
+
+    transition: all $transition;
+
+    &.expanded {
+      max-height: 150px;
+    }
+
+    .item {
+      padding: 5px;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all $transition;
+
+      &:hover {
+        background-color: #cfd8dc;
+        user-select: none;
+      }
+    }
+  } // .menu
+} // .f-header
+
+.header-page {
+  padding: 0px 15px;
+  width: 130px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+
+  .bg {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: -15;
+    background: transparent;
+    overflow: hidden;
+
+    transition: all $transition;
+  }
+
+  .subcontainer {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .text {
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+
+    transition: all $transition;
+  }
+
+  .subtext {
+    max-height: 0px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 18px;
+    transition: all $transition;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  &:hover .subtext,
+  &.on-page .subtext {
+    max-height: 30px;
+  }
+
+  img {
+    top: 6px;
+    opacity: 0.15;
+    filter: grayscale(1);
+    max-width: 80px;
+    position: absolute;
+    right: 10px;
+    bottom: -75%;
+    z-index: -10;
+    transition: all $transition;
+  }
+
+  &:hover img,
+  &.on-page img {
+    filter: grayscale(0);
+  }
+} // .header-page
+
+.separator {
+  height: 80%;
+  border-left: 1px solid $separator-color;
+}

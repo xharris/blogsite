@@ -1,0 +1,12 @@
+@import "mixins";
+@import "variables";
+
+.f-body {
+  position: absolute;
+  top: $header-height;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: auto;
+  background-color: $body-bg;
+}

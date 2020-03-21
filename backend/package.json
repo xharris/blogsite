@@ -1,0 +1,22 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "npx nodemon backend/index.js"
+  },
+  "devDependencies": {
+    "dot-env": "0.0.1",
+    "nodemon": "^1.19.3"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "helmet": "^3.21.1",
+    "knex": "^0.19.5",
+    "mongoose": "^5.9.5",
+    "morgan": "^1.9.1"
+  }
+}

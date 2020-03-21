@@ -1,0 +1,30 @@
+{
+  "name": "website_skelton",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "postinstall": "node ./install_dep.js",
+    "dev": "npx concurrently --handle-input -n back,front \"npm run backend\" \"npx cross-env PORT=3001 npm run frontend\"",
+    "backend": "cd backend && npm start",
+    "frontend": "cd frontend && npx nodemon --ignore frontend/ start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xharris/mealprep.git"
+  },
+  "author": "XHH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xharris/website_skelton/issues"
+  },
+  "homepage": "https://github.com/xharris/website_skelton#readme",
+  "dependencies": {
+    "polished": "^3.4.4",
+    "styled-components": "^5.0.1"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.0",
+    "cross-env": "^6.0.3",
+    "nodemon": "^1.19.3"
+  }
+}

@@ -1,0 +1,56 @@
+@import "variables";
+
+button {
+  font-size: 12px;
+  padding: 3px 6px;
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  color: white;
+  font-weight: 500;
+  min-width: 50px;
+  border: 1px solid transparent;
+
+  transition: all $transition;
+
+  &:hover:not(:disabled) {
+    border-color: $button-border-color;
+  }
+
+  &:disabled {
+    background-color: #90a4ae;
+  }
+
+  &.rounded {
+    border-radius: 100%;
+    width: 26px;
+    height: 26px;
+    min-width: 0px;
+    padding: 0px;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .material-icons {
+      font-size: 18px;
+    }
+  }
+}
+
+.button-group {
+  > button {
+    border-radius: 0px;
+
+    &:not(:first-child) {
+      border-left-color: $button-border-color;
+    }
+  }
+  > button:first-child {
+    border-radius: 3px 0px 0px 3px;
+  }
+  > button:last-child {
+    border-radius: 0px 3px 3px 0px;
+    border-left-color: $button-border-color;
+  }
+}

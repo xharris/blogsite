@@ -1,0 +1,37 @@
+.ReactModal__Overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.ReactModal__Content {
+  position: relative !important;
+  top: initial !important;
+  left: initial !important;
+  right: initial !important;
+  bottom: initial !important;
+  padding-top: 35px !important;
+  min-width: 200px;
+  min-height: 100px;
+  max-height: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  .modal-close {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    margin: 5px;
+  }
+
+  .modal-title {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    margin-left: 14px;
+    font-weight: 800;
+    margin-top: 6px;
+  }
+}

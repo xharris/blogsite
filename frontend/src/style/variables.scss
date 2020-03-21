@@ -1,0 +1,31 @@
+$shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+$transition: cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+
+$bg-color: #eeeeee;
+
+// INPUT
+$input-bg-color: scale-color(#e0e0e0, $lightness: 50%);
+
+// BUTTON (general)
+$button-bg-color: #51aded;
+$button-border-color: #90a4ae;
+
+// HEADER
+$header-bg: #181a1b;
+$header-height: 50px;
+$logo-margin-left: 20px;
+$logo-width: 48px;
+$separator-color: #757575;
+
+// BODY
+$body-bg: #1d1f20;
+
+// EVENTCARD
+$eventcard-background-color: #fafafa;
+$eventcard-border: 1px solid $eventcard-background-color;
+
+// ANNOUNCEMENT
+$ann-max-size: 200px;
+
+// POLL
+$voted-fill: #51aded;
