@@ -1,3 +1,20 @@
+@import "variables";
+
 .f-search {
-  padding: 10px;
+  width: 100%;
+
+  .input {
+    background-color: #fafafa;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .tag-suggestions {
+    .f-fake-link {
+      color: $tag-color-darker;
+      margin: 4px;
+      margin-left: 0px;
+      font-size: 14px;
+    }
+  }
 }

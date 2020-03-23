@@ -8,6 +8,7 @@ import authContext from "@db/authContext";
 
 import Home from "@page/home";
 import Browse from "@page/browse";
+import Create from "@page/create";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -24,6 +25,7 @@ const App = () => {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/browse" component={Browse} />
+          <Route exact path="/create" component={Create} />
         </Switch>
       </BrowserRouter>
     </authContext.Provider>

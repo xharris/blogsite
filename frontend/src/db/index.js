@@ -8,16 +8,6 @@ const users = () => [
   }
 ];
 
-const tutorial_groups = () => [
-  {
-    id: "1",
-    title: "Asteroids",
-    description:
-      "Pilot a ship through space while shooting oncoming asteroids!",
-    likes: 28
-  }
-];
-
 const tutorial_parts = () => [
   {
     tutorial_id: "1",
@@ -61,11 +51,6 @@ const tutorial_parts = () => [
   }
 ];
 
-const tags = () => [
-  { id: "1", value: "popcorn" },
-  { id: "2", value: "trigonometry" }
-];
-
 const inst = axios.create({
   baseURL: "http://localhost:3000/api"
 });
@@ -74,10 +59,12 @@ export const TutorialGroup = {
   add: data => inst.post("/tutorialgroup", data),
   update: (id, data) => inst.put(`/tutorialgroups/${id}`, data),
   delete: id => inst.delete(`/tutorialgroups/${id}`),
-  get: id => inst.get(id == null ? "/tutorialgroups" : `/tutorialgroups/${id}`)
+  get: id => inst.get(id == null ? "/tutorialgroups" : `/tutorialgroup/${id}`)
 };
 
-export const Tag = {};
+export const Tag = {
+  get: id => inst.get(id == null ? "/tags" : `/tag/${id}`)
+};
 
 export const User = {};
 

@@ -2,7 +2,7 @@
 @import "variables";
 
 .f-header {
-  @include BoxShadow(4);
+  // @include BoxShadow(4);
   display: flex;
   flex-direction: row;
   align-content: stretch;
@@ -14,6 +14,7 @@
   z-index: 10;
   justify-content: space-between;
   background-color: $header-bg;
+  outline: 1px solid rgba(33, 33, 33, 0.1);
 
   .logo-link {
     z-index: 10;

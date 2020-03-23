@@ -11,7 +11,6 @@ const apiPort = 3000;
 const whitelist = ["http://localhost:3000", "http://localhost:3001"];
 const corsOptions = {
   origin: (origin, callback) => {
-    console.log("origin", origin);
     if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
@@ -47,18 +46,25 @@ app.use(morgan("combined")); // tiny/combined
 
 const mongoose = require("mongoose");
 mongoose
-  .connect("mongodb://127.0.0.1:27017/tutsite", { useNewUrlParser: true })
+  .connect("mongodb://127.0.0.1:27017/tutsite", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
   .catch(e => {
     console.error("Connection error", e.message);
   });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-const TutorialGroupRouter = require("./routes/tutorialgroup");
+const TutorialGroupRouter = require("./api/tutorialgroup").router;
+const TagRouter = require("./api/tag").router;
+const MediaRouter = require("./api/media").router;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 app.use("/api", TutorialGroupRouter);
+app.use("/api", TagRouter);
+app.use("/api", MediaRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

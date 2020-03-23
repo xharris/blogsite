@@ -1,8 +1,30 @@
-.p-browser {
-  display: flex;
+@import "variables";
 
-  .left {
-  }
-  .right {
+.p-browse {
+  .f-body {
+    display: flex;
+
+    > .left,
+    > .right {
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    > .left {
+      flex: 0 0 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    > .right {
+      flex: 0 1 100%;
+    }
+
+    .f-search {
+      position: fixed;
+      width: 260px;
+      bottom: 20px;
+      top: calc(20px + #{$header-height});
+    }
   }
 }

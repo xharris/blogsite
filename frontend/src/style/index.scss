@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap");
 @import "~material-design-icons-iconfont/dist/material-design-icons.css";
 @import "variables";
 
@@ -8,6 +9,10 @@
 
 #root {
   background-color: $bg-color;
+
+  *:not(.material-icons) {
+    font-family: "Source Sans Pro", sans-serif;
+  }
 }
 
 .hide-link {

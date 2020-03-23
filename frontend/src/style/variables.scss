@@ -2,6 +2,7 @@ $shadow-1: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 $transition: cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
 
 $bg-color: #eeeeee;
+$a-color: #b3e5fc;
 
 // INPUT
 $input-bg-color: scale-color(#e0e0e0, $lightness: 50%);
@@ -11,14 +12,14 @@ $button-bg-color: #51aded;
 $button-border-color: #90a4ae;
 
 // HEADER
-$header-bg: #181a1b;
+$header-bg: white;
 $header-height: 50px;
 $logo-margin-left: 20px;
 $logo-width: 48px;
-$separator-color: #757575;
+$separator-color: #e0e0e0;
 
 // BODY
-$body-bg: #1d1f20;
+$body-bg: #eeeeee;
 
 // EVENTCARD
 $eventcard-background-color: #fafafa;
@@ -29,3 +30,10 @@ $ann-max-size: 200px;
 
 // POLL
 $voted-fill: #51aded;
+
+// TUTORIALGROUP-CARD
+$tutgroup-card-padding: 5px;
+
+// TAG
+$tag-color: #b0bec5;
+$tag-color-darker: #546e7a;

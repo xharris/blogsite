@@ -20,7 +20,7 @@ const S = {
     }
     &.on-page > div,
     &:hover > div {
-      text-shadow: 0px 0px 15px ${props => props.color};
+      text-shadow: 0px 0px 4px ${props => props.color};
       color: ${props => darken(0.25, props.color)};
     }
   `,
@@ -64,7 +64,7 @@ const Header = withRouter(props => {
           <HeaderPage
             text="Browse"
             subtext="lots of tutorials"
-            color={"#2196f3"}
+            color={"#3F51B5"}
             image={img_world}
             to={"/browse"}
           />
@@ -72,7 +72,7 @@ const Header = withRouter(props => {
           <HeaderPage
             text="Profile"
             subtext="tutorials you've saved/created"
-            color={"#8bc34a"}
+            color={"#2196F3"}
             to={user ? "/me" : "/signin"}
           />
         </div>
