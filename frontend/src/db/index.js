@@ -55,21 +55,26 @@ const inst = axios.create({
   baseURL: "http://localhost:3000/api"
 });
 
-export const TutorialGroup = {
-  add: data => inst.post("/tutorialgroup", data),
-  update: (id, data) => inst.put(`/tutorialgroups/${id}`, data),
-  delete: id => inst.delete(`/tutorialgroups/${id}`),
-  get: id => inst.get(id == null ? "/tutorialgroups" : `/tutorialgroup/${id}`)
+export const Tutorial = {
+  add: data => inst.post("/tutorials/add", data),
+  update: (id, data) => inst.put(`/tutorials/${id}/update`, data),
+  delete: id => inst.delete(`/tutorials/${id}/delete`),
+  get: id => inst.get(`/tutorials${id ? "/" + id : ""}`)
+};
+
+export const TutorialPart = {
+  get_by_tutorial_id: tutorial_id => inst.get(`/tutorial/${tutorial_id}/parts`)
 };
 
 export const Tag = {
-  get: id => inst.get(id == null ? "/tags" : `/tag/${id}`)
+  get: id => inst.get(`/tags${id ? "/" + id : ""}`)
 };
 
 export const User = {};
 
 const api = {
-  TutorialGroup,
+  Tutorial,
+  TutorialPart,
   Tag,
   User
 };

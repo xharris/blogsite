@@ -21,20 +21,19 @@ const controller = build_ctrl({
   ctrl_opt: {
     add: {
       modify: (instance, req, res) => {
-        console.log(instance.type);
-        if (!["video", "image"].includes(instance.type))
+        if (!["video", "image", "code"].includes(instance.type))
           return res.status(400).json({
             success: false,
-            error: "Media.type should be video/image"
+            error: "Media.type should be video/image/code"
           });
       }
     }
   }
 });
 
-router.post("/media", controller.add);
-router.put("/media/:id", controller.update);
-router.delete("/media/:id", controller.delete);
+router.post("/media/add", controller.add);
+router.put("/media/:id/update", controller.update);
+router.delete("/media/:id/delete", controller.delete);
 router.get("/media/:id", controller.get_by_id);
 
 module.exports = { model, controller, router };

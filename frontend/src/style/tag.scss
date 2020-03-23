@@ -1,18 +1,14 @@
+@import "mixins";
+@import "variables";
+
 .f-tag {
-  background-color: #eeeeee;
-  padding: 8px 12px;
-  display: inline-block;
-  border-radius: 25px;
-  font-size: 14px;
-  color: #757575;
-  line-height: 10px;
-  margin: 4px;
-  cursor: default;
-  white-space: nowrap;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-decoration: none;
+  color: $tag-color;
+  margin-right: 5px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .f-tag-list {

@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import "@style/search.scss";
+import queryString from "query-string";
+import { withRouter } from "react-router-dom";
 
-import { Tag } from "@db";
+import { Tag as dbTag } from "@db";
 
 import FakeLink from "@feature/fakelink";
+import { Tag } from "@feature/tag";
+
+import "@style/search.scss";
 
 const re_search = [/(.*\s)(#\w+)$/, /^()(#\w+)$/];
 
-const Search = props => {
+const Search = withRouter(props => {
   const [tagList, setTagList] = useState(null);
   const [tagSuggestions, setTagSuggestions] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -26,7 +30,7 @@ const Search = props => {
           if (v.startsWith("#")) tags.push(v.slice(1));
           else text.push(v);
         });
-      props.onChange({ text: text.join(" "), tags: tags });
+      props.onChange({ text: text.join(" "), tags: tags, string: searchValue });
     }
   };
 
@@ -39,8 +43,25 @@ const Search = props => {
   }, [searchValue]);
 
   useEffect(() => {
+    const query_params = queryString.parse(props.location.search);
+    var search_value = "";
+    // search: value
+    if (query_params.search) search_value += query_params.search + " ";
+    // search: tags
+    if (query_params.tags)
+      search_value +=
+        query_params.tags
+          .split(",")
+          .map(t => "#" + t)
+          .join(" ") + " ";
+
+    setSearchValue(search_value);
+    triggerOnChange();
+  }, [props.location.search]);
+
+  useEffect(() => {
     (async () => {
-      await Tag.get().then(e => {
+      await dbTag.get().then(e => {
         setTagList(e.data.data);
         setTagSuggestions(e.data.data);
       });
@@ -79,10 +100,9 @@ const Search = props => {
       <div className="tag-suggestions">
         {tagSuggestions &&
           tagSuggestions.map(tag => (
-            <FakeLink
+            <Tag
               key={tag._id}
-              to={`/browse?tags=${tag.value}`}
-              text={`#${tag.value}`}
+              value={tag.value}
               onClick={() => {
                 var matched = false;
                 for (var re of re_search) {
@@ -92,7 +112,7 @@ const Search = props => {
                   }
                 }
                 if (!matched) {
-                  setSearchValue(`${searchValue}#${tag.value} `);
+                  setSearchValue(`${searchValue} #${tag.value} `);
                 }
                 resetTagSuggestions();
                 triggerOnChange();
@@ -103,6 +123,6 @@ const Search = props => {
       </div>
     </div>
   );
-};
+});
 
 export default Search;

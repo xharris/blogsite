@@ -1,53 +1,60 @@
 import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
 
-import { TutorialGroup } from "@db";
+import { Tutorial } from "@db";
 
 import Header from "@feature/header";
 import Body from "@feature/body";
 import Search from "@feature/search";
 import { TagList } from "@feature/tag";
-import { Card as TGCard } from "@feature/tutorialgroup";
+import { Card as TGCard } from "@feature/tutorial";
 
 import "@style/browse.scss";
 
-const Browse = () => {
+const Browse = withRouter(props => {
   const [tutorialList, setTutorialList] = useState(null);
   const [filteredList, setFilteredList] = useState(null);
+  const [searchValue, setSearchValue] = useState(null);
+
+  const filter = () => {
+    if (searchValue && tutorialList) {
+      setFilteredList(
+        tutorialList.filter(t => {
+          var include = true;
+          if (!t.title.toLowerCase().includes(searchValue.text))
+            include = false;
+          if (
+            searchValue.tags.length > 0 &&
+            !searchValue.tags.every(tag =>
+              t.tags.map(new_tag => new_tag.value).includes(tag)
+            )
+          )
+            include = false;
+          return include;
+        })
+      );
+    }
+  };
 
   useEffect(() => {
     (async () => {
-      await TutorialGroup.get().then(e => {
+      await Tutorial.get().then(e => {
         setTutorialList(e.data.data);
         setFilteredList(e.data.data);
       });
     })();
   }, []);
 
+  useEffect(() => {
+    filter();
+  }, [tutorialList, searchValue]);
+
   return (
     <div className="p-browse">
       <Header />
       <Body>
         <div className="left">
-          <Search
-            onChange={e => {
-              if (tutorialList)
-                setFilteredList(
-                  tutorialList.filter(t => {
-                    var include = true;
-                    if (!t.title.toLowerCase().includes(e.text))
-                      include = false;
-                    if (
-                      e.tags.length > 0 &&
-                      !e.tags.every(tag =>
-                        t.tags.map(new_tag => new_tag.value).includes(tag)
-                      )
-                    )
-                      include = false;
-                    return include;
-                  })
-                );
-            }}
-          />
+          <Search onChange={setSearchValue} />
           <TagList />
         </div>
         <div className="right">
@@ -57,6 +64,6 @@ const Browse = () => {
       </Body>
     </div>
   );
-};
+});
 
 export default Browse;

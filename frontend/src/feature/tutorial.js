@@ -1,32 +1,40 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-import { Link, withRouter } from "react-router-dom";
-import { TutorialGroup } from "@db";
+import { Tutorial, TutorialPart } from "@db";
 
-import "@style/tutorialgroup.scss";
+import { Tag } from "@feature/tag";
+
+import "@style/tutorial.scss";
 
 export const Card = props => {
   const desc_len = 100;
   const [data, setData] = useState(null);
+  const [parts, setParts] = useState(null);
 
   useEffect(() => {
     if (props.data) {
       setData(props.data);
     } else {
       (async () => {
-        await TutorialGroup.get(props.id).then(e => {
+        await Tutorial.get(props.id).then(e => {
           setData(e.data.data);
         });
       })();
     }
+    (async () => {
+      await TutorialPart.get_by_tutorial_id(props.id).then(e => {
+        setParts(e.data.data);
+      });
+    })();
   }, []);
 
   return (
     data && (
-      <div className="f-tutorialgroup-card">
+      <div className="f-tutorial-card">
         <div className="text-container">
           <div className="text-1">
-            <Link to={`/tutorial/${data._id}`} className="title">
+            <Link to={`/tutorials/${data._id}`} className="title">
               {data.title}
             </Link>
             <span className="icons">
@@ -36,30 +44,24 @@ export const Card = props => {
                   {data.likes}
                 </div>
               )}
-              {data.likes > 0 && (
+              {parts && parts.length > 0 && (
                 <div>
                   <i className="material-icons">library_books</i>
-                  {data.likes}
+                  {parts.length}
                 </div>
               )}
             </span>
           </div>
-          <div className="text-2">
+          <Link className="text-2" to={`/tutorials/${data._id}`}>
             <span className="description">
               {data.description.length > desc_len
                 ? data.description.slice(0, desc_len) + "..."
                 : data.description}
             </span>
-          </div>
+          </Link>
           <div className="text-3">
             {data.tags.map(t => (
-              <Link
-                key={t._id}
-                to={`/browse?tags=${t.value}`}
-                className="tag-link"
-              >
-                {`#${t.value}`}
-              </Link>
+              <Tag key={t._id} id={t._id} />
             ))}
           </div>
         </div>

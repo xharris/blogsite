@@ -1,18 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link, withRouter } from "react-router-dom";
 
 import { Tag as dbTag } from "@db";
 
+import FakeLink from "@feature/fakelink";
+
 import "@style/tag.scss";
 
-const Tag = props => {
-  const { value } = dbTag.get(props.id);
-  const text = value.length > 50 ? value.slice(0, 50) + "..." : value;
+export const Tag = withRouter(props => {
+  const [tagValue, setTagValue] = useState(props.value || "");
+
+  useEffect(() => {
+    if (props.id) {
+      (async () => {
+        await dbTag.get(props.id).then(e => {
+          setTagValue(e.data.data.value);
+        });
+      })();
+    }
+  }, []);
+
+  useEffect(() => {
+    setTagValue(
+      tagValue.length > 50 ? tagValue.slice(0, 50) + "..." : tagValue
+    );
+  }, [tagValue]);
+
+  // return props.onClick ? (
   return (
-    <div title={value} className="f-tag">
-      {"#" + text}
-    </div>
+    <FakeLink
+      text={`#${tagValue}`}
+      className="f-tag"
+      onClick={
+        props.onClick
+          ? props.onClick
+          : () => {
+              props.history.push({
+                pathname: "/browse",
+                search: `?tags=${encodeURI(tagValue)}`
+              });
+            }
+      }
+    />
   );
-};
+  // ) : (
+  //   <Link to={`/browse?search=${encodeURI(" #" + tagValue)}`} className="f-tag">
+  //     {`#${tagValue}`}
+  //   </Link>
+  // );
+});
 
 export const TagList = props => {
   return (

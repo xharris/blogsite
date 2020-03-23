@@ -12,6 +12,7 @@
     "mongoose": "^5.9.5",
     "node-sass": "^4.13.1",
     "purecss": "^1.0.1",
+    "query-string": "^6.11.1",
     "react": "^16.10.1",
     "react-bootstrap": "^1.0.0-beta.17",
     "react-bootstrap-date-time-picker": "0.0.3",

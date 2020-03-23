@@ -56,15 +56,17 @@ mongoose
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-const TutorialGroupRouter = require("./api/tutorialgroup").router;
+const TutorialRouter = require("./api/tutorial").router;
 const TagRouter = require("./api/tag").router;
 const MediaRouter = require("./api/media").router;
+const TutorialPartRouter = require("./api/tutorial_part").router;
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello Warudo!");
 });
-app.use("/api", TutorialGroupRouter);
+app.use("/api", TutorialRouter);
 app.use("/api", TagRouter);
 app.use("/api", MediaRouter);
+app.use("/api", TutorialPartRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

@@ -19,10 +19,10 @@ const controller = build_ctrl({
   ctrls: ["add", "update", "delete", "get_by_id", "get_all"]
 });
 
-router.post("/tag", controller.add);
-router.put("/tag/:id", controller.update);
-router.delete("/tag/:id", controller.delete);
-router.get("/tag/:id", controller.get_by_id);
+router.post("/tags/add", controller.add);
+router.put("/tags/:id/update", controller.update);
+router.delete("/tags/:id/delete", controller.delete);
+router.get("/tags/:id", controller.get_by_id);
 router.get("/tags", controller.get_all);
 
 module.exports = { model, controller, router };
