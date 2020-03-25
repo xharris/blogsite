@@ -40,8 +40,17 @@ const helmet = require("helmet"); // creates headers to protect from attacks
 const morgan = require("morgan"); // logs requests. ok??
 app.use(helmet());
 app.use(cors(corsOptions));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+app.use(
+  bodyParser.json({
+    limit: "8mb",
+    extended: true
+  })
+);
 app.use(morgan("combined")); // tiny/combined
 
 const mongoose = require("mongoose");

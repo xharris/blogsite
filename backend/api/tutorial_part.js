@@ -21,13 +21,26 @@ const controller = build_ctrl({
   model: model,
   ctrls: ["add", "update", "delete", "get_all"],
   ctrl_opt: {
+    add: {
+      modify: (inst, req) => {
+        console.log(inst.instance_id);
+        inst.instance_id = req.params.tutorial_id;
+      }
+    },
     get_all: {
-      populate: ["media"]
+      populate: [
+        {
+          path: "media",
+          populate: {
+            path: ""
+          }
+        }
+      ]
     }
   }
 });
 
-router.post("/tutorial/part/add", controller.add);
+router.post("/tutorial/:tutorial_id/part/add", controller.add);
 router.put("/tutorial/part/update", controller.update);
 router.delete("/tutorial/part/:id/delete", controller.delete);
 router.get("/tutorial/:tutorial_id/parts", controller.get_all);

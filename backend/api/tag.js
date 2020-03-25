@@ -6,6 +6,8 @@ const router = express.Router();
 
 const schema = new Schema({
   value: { type: String, required: true },
+  type: { type: String, default: "normal" },
+  color: { type: String },
 
   date_created: { type: Date, required: true },
   date_modified: { type: Date, required: true }

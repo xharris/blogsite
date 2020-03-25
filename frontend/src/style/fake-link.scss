@@ -1,4 +1,6 @@
 .f-fake-link {
-  text-decoration: underline;
+  &:not(.no-underline) {
+    text-decoration: underline;
+  }
   cursor: pointer;
 }

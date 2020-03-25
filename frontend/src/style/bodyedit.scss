@@ -1,0 +1,25 @@
+@import "~github-markdown-css/github-markdown.css";
+
+.f-body-edit {
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+
+  > * {
+    flex: 0 1 100%;
+    margin: 0px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  textarea {
+    resize: none;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    box-shadow: 1px 1px 1px 0px #78909c;
+  }
+
+  .toolbar {
+  }
+}

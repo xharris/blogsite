@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 import { Tutorial, TutorialPart } from "@db";
 
 import { Tag } from "@feature/tag";
+import Thumbnail from "@feature/thumbnail";
 
 import "@style/tutorial.scss";
 
-export const Card = props => {
+export const Card = withRouter(props => {
   const desc_len = 100;
   const [data, setData] = useState(null);
   const [parts, setParts] = useState(null);
@@ -32,6 +33,12 @@ export const Card = props => {
   return (
     data && (
       <div className="f-tutorial-card">
+        <Thumbnail
+          src={data.thumbnail ? `${atob(data.thumbnail.value)}` : null}
+          onClick={() => {
+            props.history.push(`/tutorials/${data._id}`);
+          }}
+        />
         <div className="text-container">
           <div className="text-1">
             <Link to={`/tutorials/${data._id}`} className="title">
@@ -52,20 +59,20 @@ export const Card = props => {
               )}
             </span>
           </div>
-          <Link className="text-2" to={`/tutorials/${data._id}`}>
+          <div className="text-2">
             <span className="description">
               {data.description.length > desc_len
                 ? data.description.slice(0, desc_len) + "..."
                 : data.description}
             </span>
-          </Link>
+          </div>
           <div className="text-3">
             {data.tags.map(t => (
-              <Tag key={t._id} id={t._id} />
+              <Tag key={t._id} data={t} dark={true} />
             ))}
           </div>
         </div>
       </div>
     )
   );
-};
+});

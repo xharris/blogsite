@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import styled from "styled-components";
 import "@style/thumbnail.scss";
@@ -18,13 +18,20 @@ const S = {
 const Thumbnail = props => {
   const [file, setFile] = useState(props.src);
 
+  useEffect(() => {
+    if (!file.startsWith("data:image") && props.mime_type) {
+      setFile(`data:image/${props.mime_type};base64,${file}`);
+    }
+  }, [file]);
+
   return (
     <S.Thumbnail
       {...{
         ...props,
         className: `f-thumbnail ${props.type || "square"} ${props.className ||
-          ""}`
+          ""}${props.onClick ? " clickable" : " "}`
       }}
+      onClick={props.onClick}
     >
       {Array.isArray(file)
         ? file.map((src, i) => (

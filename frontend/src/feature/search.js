@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { Tag as dbTag } from "@db";
 
 import FakeLink from "@feature/fakelink";
-import { Tag } from "@feature/tag";
+import { TagList } from "@feature/tag";
 
 import "@style/search.scss";
 
@@ -98,28 +98,26 @@ const Search = withRouter(props => {
         }}
       />
       <div className="tag-suggestions">
-        {tagSuggestions &&
-          tagSuggestions.map(tag => (
-            <Tag
-              key={tag._id}
-              value={tag.value}
-              onClick={() => {
-                var matched = false;
-                for (var re of re_search) {
-                  if (searchValue.match(re)) {
-                    matched = true;
-                    setSearchValue(searchValue.replace(re, `$1#${tag.value} `));
-                  }
+        {tagSuggestions && (
+          <TagList
+            data_list={tagSuggestions}
+            onClick={tdata => {
+              var matched = false;
+              for (var re of re_search) {
+                if (searchValue.match(re)) {
+                  matched = true;
+                  setSearchValue(searchValue.replace(re, `$1#${tdata.value} `));
                 }
-                if (!matched) {
-                  setSearchValue(`${searchValue} #${tag.value} `);
-                }
-                resetTagSuggestions();
-                triggerOnChange();
-                el_input.current.focus();
-              }}
-            />
-          ))}
+              }
+              if (!matched) {
+                setSearchValue(`${searchValue} #${tdata.value} `);
+              }
+              resetTagSuggestions();
+              triggerOnChange();
+              el_input.current.focus();
+            }}
+          />
+        )}
       </div>
     </div>
   );

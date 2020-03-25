@@ -28,6 +28,7 @@ const App = () => {
           <Route exact path="/browse" component={Browse} />
           <Route exact path="/create" component={Create} />
           <Route exact path="/tutorials/:id" component={TutorialView} />
+          <Route exact path="/tutorials/:id/:action" component={TutorialView} />
         </Switch>
       </BrowserRouter>
     </authContext.Provider>

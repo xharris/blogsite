@@ -8,49 +8,6 @@ const users = () => [
   }
 ];
 
-const tutorial_parts = () => [
-  {
-    tutorial_id: "1",
-    title: "Creating the ship",
-    user_created: "1",
-    media: [
-      ["image", "https://thumbs.gfycat.com/CrispWelllitBrocketdeer-small.gif"],
-      ["video", "https://www.youtube.com/watch?v=f0GYxSmw328"]
-    ],
-    code: `
-      Entity("ship",{
-        image = 'ship.png',
-        align = 'center'
-      })
-    `,
-    description: `
-      Set the ship's image and center it
-    `
-  },
-  {
-    tutorial_id: "1",
-    title: "Ship movement",
-    user_created: "1",
-    media: [
-      ["image", "https://thumbs.gfycat.com/CrispWelllitBrocketdeer-small.gif"],
-      ["video", "https://www.youtube.com/watch?v=f0GYxSmw328"]
-    ],
-    code: `
-      Entity("ship",{
-        image = 'ship.png',
-        align = 'center',
-        update = function(self, dt)
-          self.angle = self.angle + 5 * dt
-        end
-      })
-    `,
-    description: `
-      We increment the angle by 5.
-      dt is multiplied 
-    `
-  }
-];
-
 const inst = axios.create({
   baseURL: "http://localhost:3000/api"
 });
@@ -63,7 +20,12 @@ export const Tutorial = {
 };
 
 export const TutorialPart = {
-  get_by_tutorial_id: tutorial_id => inst.get(`/tutorial/${tutorial_id}/parts`)
+  add: (tutorial_id, data) => {
+    data.tutorial_id = tutorial_id;
+    inst.post(`/tutorial/${tutorial_id}/part/add`, data);
+  },
+  get_by_tutorial_id: tutorial_id => inst.get(`/tutorial/${tutorial_id}/parts`),
+  delete: part_id => inst.delete(`/tutorial/part/${part_id}/delete/$`)
 };
 
 export const Tag = {

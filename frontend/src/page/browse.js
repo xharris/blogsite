@@ -55,7 +55,6 @@ const Browse = withRouter(props => {
       <Body>
         <div className="left">
           <Search onChange={setSearchValue} />
-          <TagList />
         </div>
         <div className="right">
           {filteredList &&

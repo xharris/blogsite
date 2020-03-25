@@ -9,6 +9,7 @@ const schema = new Schema({
   description: { type: String },
   likes: { type: Number, default: 0 },
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag" }],
+  thumbnail: { type: mongoose.Schema.Types.ObjectId, ref: "media" },
 
   date_created: { type: Date, required: true },
   date_modified: { type: Date, required: true }
@@ -22,10 +23,10 @@ const controller = build_ctrl({
   ctrls: ["add", "update", "delete", "get_by_id", "get_all"],
   ctrl_opt: {
     get_by_id: {
-      populate: ["tags"]
+      populate: [{ path: "tags" }, { path: "thumbnail" }]
     },
     get_all: {
-      populate: ["tags"]
+      populate: [{ path: "tags" }, { path: "thumbnail" }]
     }
   }
 });

@@ -79,18 +79,18 @@ export const controllers = {
           ? error(400, res, { error: err || `${name} not found` })
           : error(200, res, { data: instance });
       })
-      .populate(...(opt.populate || []))
+      .populate(opt.populate)
       .catch(err => console.error(err));
   },
 
   get_all: (name, model, opt) => async (req, res) => {
-    await model
+    const q = await model
       .find(opt.params ? opt.params(req) : {}, (err, instances) => {
         return err || !instances.length
           ? error(404, res, { error: err || `${name} not found` })
           : error(200, res, { data: instances });
       })
-      .populate(...(opt.populate || []))
+      .populate(opt.populate)
       .catch(err => console.error(err));
   }
 };

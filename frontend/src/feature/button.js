@@ -9,8 +9,9 @@ const S = {
   Button: styled.button`
     background-color: ${props => props.color};
 
-    &:hover:not(:last-child) {
-      border-right-color: ${props => props.color};
+    &:hover {
+      background-color: ${props => darken(0.1, props.color)} !important;
+      border-color: ${props => darken(0.1, props.color)} !important;
     }
 
     &:active {

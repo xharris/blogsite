@@ -7,6 +7,7 @@ const router = express.Router();
 const schema = new Schema({
   type: { type: String, required: true },
   value: { type: String, required: true },
+  mime_type: { type: String },
 
   date_created: { type: Date, required: true },
   date_modified: { type: Date, required: true }
