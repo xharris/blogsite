@@ -5,7 +5,7 @@ const express = require("express");
 const router = express.Router();
 
 const schema = new Schema({
-  value: { type: String, required: true },
+  value: { type: String, required: true, unique: true },
   type: { type: String, default: "normal" },
   color: { type: String },
 

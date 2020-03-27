@@ -8,7 +8,7 @@ const schema = new Schema({
   tutorial_id: { type: mongoose.Schema.Types.ObjectId, required: true },
   title: { type: String, required: true },
   body: { type: String },
-  media: [{ type: mongoose.Schema.Types.ObjectId, ref: "media" }],
+  media: { type: mongoose.Schema.Types.ObjectId, ref: "media" },
 
   date_created: { type: Date, required: true },
   date_modified: { type: Date, required: true }
@@ -23,7 +23,6 @@ const controller = build_ctrl({
   ctrl_opt: {
     add: {
       modify: (inst, req) => {
-        console.log(inst.instance_id);
         inst.instance_id = req.params.tutorial_id;
       }
     },

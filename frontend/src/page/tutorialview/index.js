@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 
 import Prism from "prismjs";
 
-import { Tutorial as dbTutorial, TutorialPart } from "@db";
+import { Tutorial as dbTutorial, TutorialPart, Tag } from "@util/db";
 
 import Header from "@feature/header";
 import Body from "@feature/body";
@@ -11,8 +11,46 @@ import FakeLink from "@feature/fakelink";
 import Button from "@feature/button";
 import BodyEdit from "@feature/bodyedit";
 
-import "@style/tutorialview.scss";
-import { bytesToSize } from "@front/util";
+import "./index.scss";
+import { bytesToSize } from "@util";
+
+const Media = props => {
+  var m = props.media;
+  switch (m && m.type) {
+    case "image":
+      return (
+        <img
+          key={m._id}
+          className={`media ${m.type}`}
+          src={`data:image/png;base64,${m.value}`}
+        />
+      );
+    case "video":
+      return (
+        <iframe
+          key={m._id}
+          className={`media ${m.type}`}
+          width="560"
+          height="315"
+          src={m.value.replace(
+            /(.*)v=(\w+)/,
+            "https://www.youtube.com/embed/$2"
+          )}
+          eborder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      );
+    case "code":
+      return (
+        <div key={m._id} className={`media ${m.type}`}>
+          {m.value}
+        </div>
+      );
+    default:
+      return <></>;
+  }
+};
 
 const TutorialView = withRouter(props => {
   const [data, setData] = useState(null);
@@ -22,6 +60,7 @@ const TutorialView = withRouter(props => {
   const [partIndex, setPartIndex] = useState(0);
   const [bodyContent, setBodyContent] = useState("");
   const [bodySize, setBodySize] = useState(0);
+  const [tags, setTags] = useState([]);
 
   const add_part = () => {
     setParts([...parts, { _id: "new" + parts.length, title: "", body: "" }]);
@@ -41,10 +80,56 @@ const TutorialView = withRouter(props => {
       .map(p => ({ ...p, _id: null }));
     const update_data = parts.filter(p => !p._id.startsWith("new"));
 
+    const update_parts = async () => {
+      // DB: add new tutorial parts
+      await Promise.all(
+        new_data.map(async p => await TutorialPart.add(data._id, p))
+      )
+        .then(
+          async e =>
+            // DB: update existing tutorial parts
+            await Promise.all(
+              update_data.map(async p => {
+                // console.log(p);
+                // await TutorialPart.update(p)
+              })
+            )
+        )
+        .then(e => {
+          window.location.reload(true);
+        });
+    };
+
+    // DB: create any new tags
+    var tag_ids = [];
     await Promise.all(
-      new_data.map(async p => await TutorialPart.add(data._id, p))
-    );
-    console.log(new_data, update_data);
+      tags.map(
+        async t =>
+          await Tag.add({ value: t }).then(e => {
+            if (e.status === 200) {
+              // tag already exists
+              tag_ids.push(e.data.data._id);
+            } else {
+              // new tag
+              tag_ids.push(e.data.id);
+            }
+          })
+      )
+    ).then(async e => {
+      var new_data = { ...data, tags: tag_ids };
+      if (new_data._id) {
+        // DB: update tutorial data
+        await dbTutorial.update(new_data).then(e => {
+          update_parts();
+        });
+      } else {
+        // DB: new tutorial data
+        await dbTutorial.add(new_data).then(e => {
+          update_parts();
+        });
+      }
+    });
+    // await dbTutorial.update(data);
   };
 
   useEffect(() => {
@@ -58,15 +143,17 @@ const TutorialView = withRouter(props => {
   }, [bodyContent]);
 
   useEffect(() => {
+    // retrieve tutorial data
     (async () => {
       await dbTutorial.get(props.match.params.id).then(e => {
         setData(e.data.data);
+        setTags(e.data.data.tags.map(t => t.value));
       });
     })();
+    // retrieve data for tutorial parts
     (async () => {
       await TutorialPart.get_by_tutorial_id(props.id).then(e => {
         setParts(e.data.data);
-        console.log(e.data.data);
       });
     })();
   }, []);
@@ -80,11 +167,33 @@ const TutorialView = withRouter(props => {
           <div className="sidebar">
             <div className="fixed-content">
               {editing ? (
-                <input
-                  className="input title"
-                  defaultValue={data.title}
-                  placeholder="Title"
-                />
+                [
+                  <input
+                    key={"title"}
+                    className="input title"
+                    defaultValue={data.title}
+                    placeholder="Title"
+                    onChange={e => setData({ ...data, title: e.target.value })}
+                  />,
+                  <textarea
+                    key={"desc"}
+                    className="input description"
+                    defaultValue={data.description}
+                    placeholder="Description"
+                    onChange={e =>
+                      setData({ ...data, description: e.target.value })
+                    }
+                  />,
+                  <textarea
+                    key={"tags"}
+                    className="input tags"
+                    defaultValue={data.tags.map(t => t.value).join(", ")}
+                    placeholder="Tags (comma-seperated)"
+                    onChange={e =>
+                      setTags(e.target.value.split(",").map(t => t.trim()))
+                    }
+                  />
+                ]
               ) : (
                 <div className="title">{data.title}</div>
               )}
@@ -92,7 +201,7 @@ const TutorialView = withRouter(props => {
                 {parts.map((p, i) =>
                   editing ? (
                     <div key={p._id} className="part-title-input">
-                      <i className="material-icons drag">drag_handle</i>
+                      {/*<i className="material-icons drag">drag_handle</i>*/}
                       <span className="part-title">{p.title}</span>
                       <FakeLink
                         className="material-icons edit no-underline"
@@ -191,44 +300,7 @@ const TutorialView = withRouter(props => {
                       <div className="part-body">{decodeURI(p.body)}</div>
                     </div>
                     <div className="media-container">
-                      {p.media.length > 0 &&
-                        p.media.slice(0, 2).map(m => {
-                          switch (m.type) {
-                            case "image":
-                              return (
-                                <img
-                                  key={m._id}
-                                  className={`media ${m.type}`}
-                                  src={`data:image/png;base64,${m.value}`}
-                                />
-                              );
-                              break;
-                            case "video":
-                              return (
-                                <iframe
-                                  key={m._id}
-                                  className={`media ${m.type}`}
-                                  width="560"
-                                  height="315"
-                                  src={m.value.replace(
-                                    /(.*)v=(\w+)/,
-                                    "https://www.youtube.com/embed/$2"
-                                  )}
-                                  eborder="0"
-                                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                  allowFullScreen
-                                />
-                              );
-                              break;
-                            case "code":
-                              return (
-                                <div key={m._id} className={`media ${m.type}`}>
-                                  {m.value}
-                                </div>
-                              );
-                              break;
-                          }
-                        })}
+                      <Media media={p.media} />
                     </div>
                   </div>
                 ))}

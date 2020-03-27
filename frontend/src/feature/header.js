@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-
 import { NavLink, Link, withRouter } from "react-router-dom";
-import authContext from "@db/authContext";
+
+import authContext from "@util/authContext";
+import paths from "@util/url";
 
 import Thumbnail from "@feature/thumbnail";
 import FakeLink from "@feature/fakelink";
@@ -10,7 +11,7 @@ import img_world from "@image/world.png";
 import img_logo from "@front/logo48.png";
 
 import styled from "styled-components";
-import { rgba, darken, transparentize } from "polished";
+import { rgba, darken } from "polished";
 import "@style/header.scss";
 
 const S = {
@@ -62,18 +63,18 @@ const Header = withRouter(props => {
       {!props.nolinks && (
         <div className="pages-container">
           <HeaderPage
-            text="Browse"
-            subtext="lots of tutorials"
+            text="Tutorials"
+            subtext="browse lots of tutorials"
             color={"#3F51B5"}
             image={img_world}
-            to={"/browse"}
+            to={paths.browse_tutorials()}
           />
           <Separator />
           <HeaderPage
-            text="Profile"
-            subtext="tutorials you've saved/created"
+            text="Software"
+            subtext="engines and frameworks"
             color={"#2196F3"}
-            to={user ? "/me" : "/signin"}
+            to={paths.browse_software()}
           />
         </div>
       )}

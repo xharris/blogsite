@@ -9,7 +9,7 @@ module.exports = {
         source: "options", // (default)
         aliases: {
           "@front": "src",
-          "@db": "src/db",
+          "@util": "src/util",
           "@page": "src/page",
           "@feature": "src/feature",
           "@image": "src/res",

@@ -6,7 +6,7 @@ import "react-datetime/css/react-datetime.css";
 import Button from "@feature/button";
 
 import "@style/form.scss";
-import { recursiveMap } from "../util";
+import { recursiveMap } from "@util";
 
 export const Label = props =>
   props.label ? <label htmlFor={props.name}>{props.label}</label> : null;

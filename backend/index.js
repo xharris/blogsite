@@ -62,6 +62,8 @@ mongoose
   .catch(e => {
     console.error("Connection error", e.message);
   });
+mongoose.set("useCreateIndex", true);
+
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 

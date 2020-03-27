@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 
-import { Tutorial, TutorialPart } from "@db";
+import { Tutorial, TutorialPart } from "@util/db";
+import paths from "@util/url";
 
 import { Tag } from "@feature/tag";
 import Thumbnail from "@feature/thumbnail";
@@ -36,12 +37,12 @@ export const Card = withRouter(props => {
         <Thumbnail
           src={data.thumbnail ? `${atob(data.thumbnail.value)}` : null}
           onClick={() => {
-            props.history.push(`/tutorials/${data._id}`);
+            props.history.push(paths.view_tutorial(data._id));
           }}
         />
         <div className="text-container">
           <div className="text-1">
-            <Link to={`/tutorials/${data._id}`} className="title">
+            <Link to={paths.view_tutorial(data._id)} className="title">
               {data.title}
             </Link>
             <span className="icons">

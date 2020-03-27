@@ -1,4 +1,4 @@
-@import "variables";
+@import "@style/variables";
 
 .p-tutorialview {
   .f-body {
@@ -158,8 +158,16 @@
   }
 
   &.edit {
-    .sidebar .title.input {
-      margin-bottom: 10px;
+    .sidebar > .fixed-content {
+      > .input {
+        margin-bottom: 10px;
+      }
+
+      > textarea {
+        height: 130px;
+        resize: vertical;
+        font-size: 14px;
+      }
     }
 
     .part-content {

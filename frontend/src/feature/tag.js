@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, withRouter } from "react-router-dom";
 
-import { Tag as dbTag } from "@db";
+import { Tag as dbTag } from "@util/db";
+import paths from "@util/url";
 
 import FakeLink from "@feature/fakelink";
 
@@ -53,7 +54,7 @@ export const Tag = withRouter(props => {
           if (props.onClick) props.onClick(data);
           else {
             props.history.push({
-              pathname: "/browse",
+              pathname: paths.browse_tutorials(),
               search: `?tags=${encodeURI(data.value)}`
             });
           }

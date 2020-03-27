@@ -1,12 +1,14 @@
-export const error = (code, res, props) => res.status(code).json({ ...props });
+export const status = (code, res, props) => res.status(code).json({ ...props });
 
 export const controllers = {
   add: (name, model, opt) => (req, res) => {
     const body = req.body;
-    if (!body) return error(400, res, { message: `Provide a ${name}` });
+    if (!body) return status(400, res, { message: `Provide a ${name}` });
 
     const instance = new model(body);
-    if (!instance) return error(400, res, { message: err });
+    if (!instance) {
+      return status(400, res, { message: err });
+    }
 
     instance.date_created = Date.now();
     instance.date_modified = Date.now();
@@ -20,23 +22,33 @@ export const controllers = {
       .save()
       .then(() => {
         if (opt.after) return opt.after(instance);
-        return error(201, res, {
+        return status(201, res, {
           id: instance._id,
           message: `${name} created!`
         });
       })
       .then(() => {})
-      .catch(err => {
-        return error(400, res, { err, message: `${name} not created!` });
+      .catch(async err => {
+        if (err.code === 11000) {
+          const find_existing = async () =>
+            await model.findOne(err.keyValue, (err, inst2) => inst2.data);
+
+          return status(200, res, {
+            data: await find_existing(),
+            message: `${name} already exists!`
+          });
+        } else {
+          return status(400, res, { err, message: `${name} not created!` });
+        }
       });
   },
 
   update: (name, model, opt) => async (req, res) => {
     const body = req.body || {};
-    if (!body) return error(400, res, { error: "Prove a body to update" });
+    if (!body) return status(400, res, { error: "Prove a body to update" });
 
     model.findOne({ _id: req.params.id }, (err, instance) => {
-      if (err) return error(404, res, { err, message: `${name} not found!` });
+      if (err) return status(404, res, { err, message: `${name} not found!` });
 
       for (var key in body) {
         instance[key] = opt.body_mod
@@ -47,14 +59,21 @@ export const controllers = {
       instance
         .save()
         .then(() => {
-          return error(200, res, {
+          return status(200, res, {
             id: instance._id,
             message: `${name} updated!`
           });
         })
-        .catch(err =>
-          error(404, res, { err, message: `${name} not updated!` })
-        );
+        .catch(err => {
+          if (err.code === 11000) {
+            return status(201, res, {
+              id: instance._id,
+              message: `${name} already exists!`
+            });
+          } else {
+            return status(400, res, { err, message: `${name} not updated!` });
+          }
+        });
     });
   },
 
@@ -62,8 +81,8 @@ export const controllers = {
     await model
       .findOneAndDelete({ _id: req.params.id }, (err, instance) => {
         return err || !instance
-          ? error(400, res, { error: err || `${name} not found` })
-          : error(200, res, { data: instance });
+          ? status(400, res, { error: err || `${name} not found` })
+          : status(200, res, { data: instance });
       })
       .catch(err => console.error(err));
   },
@@ -76,8 +95,8 @@ export const controllers = {
         //   if (ret) return ret;
         // }
         return err || !instance
-          ? error(400, res, { error: err || `${name} not found` })
-          : error(200, res, { data: instance });
+          ? status(400, res, { error: err || `${name} not found` })
+          : status(200, res, { data: instance });
       })
       .populate(opt.populate)
       .catch(err => console.error(err));
@@ -87,8 +106,8 @@ export const controllers = {
     const q = await model
       .find(opt.params ? opt.params(req) : {}, (err, instances) => {
         return err || !instances.length
-          ? error(404, res, { error: err || `${name} not found` })
-          : error(200, res, { data: instances });
+          ? status(404, res, { error: err || `${name} not found` })
+          : status(200, res, { data: instances });
       })
       .populate(opt.populate)
       .catch(err => console.error(err));

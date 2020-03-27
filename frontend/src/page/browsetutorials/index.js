@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 
-import { Tutorial } from "@db";
+import { Tutorial } from "@util/db";
 
 import Header from "@feature/header";
 import Body from "@feature/body";
@@ -9,9 +9,9 @@ import Search from "@feature/search";
 import { TagList } from "@feature/tag";
 import { Card as TGCard } from "@feature/tutorial";
 
-import "@style/browse.scss";
+import "./index.scss";
 
-const Browse = withRouter(props => {
+const BrowseTutorials = withRouter(props => {
   const [tutorialList, setTutorialList] = useState(null);
   const [filteredList, setFilteredList] = useState(null);
   const [searchValue, setSearchValue] = useState(null);
@@ -50,7 +50,7 @@ const Browse = withRouter(props => {
   }, [tutorialList, searchValue]);
 
   return (
-    <div className="p-browse">
+    <div className="p-browse-tutorials">
       <Header />
       <Body>
         <div className="left">
@@ -65,4 +65,4 @@ const Browse = withRouter(props => {
   );
 });
 
-export default Browse;
+export default BrowseTutorials;
