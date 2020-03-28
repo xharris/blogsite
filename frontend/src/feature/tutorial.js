@@ -35,7 +35,7 @@ export const Card = withRouter(props => {
     data && (
       <div className="f-tutorial-card">
         <Thumbnail
-          src={data.thumbnail ? `${atob(data.thumbnail.value)}` : null}
+          src={data.thumbnail ? data.thumbnail.binary_value : null}
           onClick={() => {
             props.history.push(paths.view_tutorial(data._id));
           }}

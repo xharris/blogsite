@@ -15,14 +15,13 @@ const S = {
   `
 };
 
-const Thumbnail = props => {
-  const [file, setFile] = useState(props.src);
+export const parseImageData = value =>
+  value.type && value.type === "Buffer"
+    ? Buffer.from(value).toString("utf8")
+    : atob(Buffer.from(value).toString("utf8"));
 
-  useEffect(() => {
-    if (!file.startsWith("data:image") && props.mime_type) {
-      setFile(`data:image/${props.mime_type};base64,${file}`);
-    }
-  }, [file]);
+const Thumbnail = props => {
+  const [file, setFile] = useState(parseImageData(props.src));
 
   return (
     <S.Thumbnail

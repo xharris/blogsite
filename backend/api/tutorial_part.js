@@ -7,6 +7,7 @@ const router = express.Router();
 const schema = new Schema({
   tutorial_id: { type: mongoose.Schema.Types.ObjectId, required: true },
   title: { type: String, required: true },
+  order: { type: Number },
   body: { type: String },
   media: { type: mongoose.Schema.Types.ObjectId, ref: "media" },
 
@@ -40,7 +41,7 @@ const controller = build_ctrl({
 });
 
 router.post("/tutorial/:tutorial_id/part/add", controller.add);
-router.put("/tutorial/part/update", controller.update);
+router.put("/tutorial/part/:id/update", controller.update);
 router.delete("/tutorial/part/:id/delete", controller.delete);
 router.get("/tutorial/:tutorial_id/parts", controller.get_all);
 

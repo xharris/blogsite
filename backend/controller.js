@@ -45,14 +45,15 @@ export const controllers = {
 
   update: (name, model, opt) => async (req, res) => {
     const body = req.body || {};
-    if (!body) return status(400, res, { error: "Prove a body to update" });
+    if (!body) return status(400, res, { error: "Provide a body to update" });
 
     model.findOne({ _id: req.params.id }, (err, instance) => {
       if (err) return status(404, res, { err, message: `${name} not found!` });
+      if (!instance) return status(400, res, { message: err });
 
       for (var key in body) {
         instance[key] = opt.body_mod
-          ? opt.body_mod(key, instance[key], body[key]) || body[key]
+          ? opt.body_mod(key, instance[key], body[key], req) || body[key]
           : body[key];
       }
       instance.date_modified = Date.now();

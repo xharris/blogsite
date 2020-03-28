@@ -1,5 +1,9 @@
 import React from "react";
 
+export const color = {
+  red: "#e57373"
+};
+
 export class MomentUtil {
   static hmsFormat(time) {
     var format_str = [];

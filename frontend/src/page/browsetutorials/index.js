@@ -6,7 +6,6 @@ import { Tutorial } from "@util/db";
 import Header from "@feature/header";
 import Body from "@feature/body";
 import Search from "@feature/search";
-import { TagList } from "@feature/tag";
 import { Card as TGCard } from "@feature/tutorial";
 
 import "./index.scss";
@@ -39,8 +38,8 @@ const BrowseTutorials = withRouter(props => {
   useEffect(() => {
     (async () => {
       await Tutorial.get().then(e => {
-        setTutorialList(e.data.data);
-        setFilteredList(e.data.data);
+        setTutorialList(e);
+        setFilteredList(e);
       });
     })();
   }, []);

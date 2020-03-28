@@ -26,11 +26,6 @@
     }
 
     .title {
-      &.input {
-        margin-right: 1px;
-        margin-left: 1px;
-      }
-
       font-size: 16px;
       font-weight: 800;
       margin-top: 20px;
@@ -61,6 +56,10 @@
     .part-title-input {
       display: flex;
 
+      &.selected {
+        border: 1px solid #212121;
+      }
+
       .input {
         flex: 0 1 100%;
         padding: 0px;
@@ -84,6 +83,7 @@
 
     .part-title-input {
       background-color: #eceff1;
+      border: 1px solid #eceff1;
       box-shadow: 1px 1px 1px 0px #78909c;
       margin: 0px 2px;
       margin-top: 4px;
@@ -91,6 +91,8 @@
       font-size: 14px;
       border-radius: 2px;
       align-items: center;
+
+      transition: all ease-in-out 0.2s;
 
       > .part-title {
         flex: 0 1 100%;
@@ -159,12 +161,16 @@
 
   &.edit {
     .sidebar > .fixed-content {
-      > .input {
+      .input {
+        margin-right: 1px;
+        margin-left: 1px;
         margin-bottom: 10px;
       }
 
-      > textarea {
-        height: 130px;
+      textarea {
+        height: 50px;
+        max-height: 125px;
+        width: 100%;
         resize: vertical;
         font-size: 14px;
       }
@@ -205,6 +211,17 @@
         .f-button {
           margin-right: 1px;
         }
+      }
+    }
+
+    .move-action-container {
+      button {
+        padding: 2px;
+        display: flex;
+        flex-direction: column;
+      }
+      i {
+        font-size: 16px;
       }
     }
   }

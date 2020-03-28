@@ -11,7 +11,7 @@ import img_world from "@image/world.png";
 import img_logo from "@front/logo48.png";
 
 import styled from "styled-components";
-import { rgba, darken } from "polished";
+import { rgba, darken, lighten } from "polished";
 import "@style/header.scss";
 
 const S = {
@@ -49,6 +49,8 @@ const HeaderPage = props => (
 
 const Separator = () => <div className="separator" />;
 
+const header_colors = ["#3F51B5", "#0D47A1", "#0277BD"];
+
 const Header = withRouter(props => {
   const { user } = useContext(authContext);
 
@@ -65,7 +67,7 @@ const Header = withRouter(props => {
           <HeaderPage
             text="Tutorials"
             subtext="browse lots of tutorials"
-            color={"#3F51B5"}
+            color={header_colors[0]}
             image={img_world}
             to={paths.browse_tutorials()}
           />
@@ -73,7 +75,14 @@ const Header = withRouter(props => {
           <HeaderPage
             text="Software"
             subtext="engines and frameworks"
-            color={"#2196F3"}
+            color={header_colors[1]}
+            to={paths.browse_software()}
+          />
+          <Separator />
+          <HeaderPage
+            text="Create"
+            subtext="add a tutorial or software page"
+            color={header_colors[2]}
             to={paths.browse_software()}
           />
         </div>

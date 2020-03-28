@@ -6,7 +6,8 @@ const router = express.Router();
 
 const schema = new Schema({
   type: { type: String, required: true },
-  value: { type: String, required: true },
+  value: { type: String },
+  binary_value: { type: Buffer },
   mime_type: { type: String },
 
   date_created: { type: Date, required: true },

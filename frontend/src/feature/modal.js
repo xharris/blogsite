@@ -9,7 +9,7 @@ ReactModal.setAppElement("#root");
 
 const Modal = props => (
   <ReactModal isOpen={props.is_open}>
-    <div className="modal-title">{props.title}</div>
+    <div className={`modal-title`}>{props.title}</div>
     <Button
       className="modal-close rounded"
       color={"#90a4ae"}
