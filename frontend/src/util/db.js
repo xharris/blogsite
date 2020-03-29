@@ -4,27 +4,27 @@ const inst = axios.create({
   baseURL: "http://localhost:3000/api"
 });
 
-export const Tutorial = {
-  add: data => inst.post("/tutorials/add", data),
-  update: data => inst.put(`/tutorials/${data._id}/update`, data),
-  delete: id => inst.post(`/tutorials/${id}/delete`, { deleted: true }),
-  get: id =>
-    inst.get(`/tutorials${id ? "/" + id : ""}`).then(e => {
-      return [].concat(e.data.data).map(data => ({
-        ...data,
-        tags: data.tags.filter(t => t != null)
-      }));
-    })
+export const Blog = {
+  add: data => inst.post("/blog/add", data),
+  update: data => inst.put(`/blog/${data._id}/update`, data),
+  delete: id => inst.post(`/blog/${id}/delete`, { deleted: true }),
+  get: id => inst.get(`/blog${id ? "/" + id : ""}`)
 };
 
-export const TutorialPart = {
-  add: (tutorial_id, data) => {
-    data.tutorial_id = tutorial_id;
-    inst.post(`/tutorial/${tutorial_id}/part/add`, data);
+export const Post = {
+  add: (blog_id, data) => {
+    data.blog_id = blog_id;
+    inst.post(`/blog/${blog_id}/post/add`, data);
   },
-  update: data => inst.put(`/tutorial/part/${data._id}/update`, data),
-  get_by_tutorial_id: tutorial_id => inst.get(`/tutorial/${tutorial_id}/parts`),
-  delete: part_id => inst.delete(`/tutorial/part/${part_id}/delete`)
+  update: data => inst.put(`/blog/post/${data._id}/update`, data),
+  get_by_blog_id: blog_id =>
+    inst.get(`/blog/${blog_id}/posts`).then(e =>
+      [].concat(e.data.data).map(data => ({
+        ...data,
+        tags: data.tags.filter(t => t != null)
+      }))
+    ),
+  delete: post_id => inst.delete(`/blog/post/${post_id}/delete`)
 };
 
 export const Tag = {
@@ -38,14 +38,20 @@ export const Media = {
   update: data => inst.put(`/media/${data._id}/update`, data)
 };
 
+export const Style = {
+  get_by_blog_id: blog_id => inst.get(`/style/blog/${blog_id}`),
+  get_by_post_id: post_id => inst.get(`/style/post/${post_id}`)
+};
+
 export const User = {};
 
 const api = {
-  Tutorial,
-  TutorialPart,
+  Blog,
+  Post,
   Tag,
   User,
-  Media
+  Media,
+  Style
 };
 
 export default api;

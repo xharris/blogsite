@@ -32,7 +32,7 @@ const S = {
 
 const HeaderPage = props => (
   <S.NavLink
-    to={props.to}
+    to={props.nonav ? null : props.to}
     className="hide-link header-page"
     activeClassName="on-page"
     {...props}
@@ -65,25 +65,19 @@ const Header = withRouter(props => {
       {!props.nolinks && (
         <div className="pages-container">
           <HeaderPage
-            text="Tutorials"
-            subtext="browse lots of tutorials"
+            text="Home"
+            subtext="view blogs you follow"
+            nonav={"true"}
+            color={header_colors[1]}
+            to={paths.browse_followed_blogs()}
+          />
+          <Separator />
+          <HeaderPage
+            text="Explore"
+            subtext="find interesting blogs"
             color={header_colors[0]}
             image={img_world}
-            to={paths.browse_tutorials()}
-          />
-          <Separator />
-          <HeaderPage
-            text="Software"
-            subtext="engines and frameworks"
-            color={header_colors[1]}
-            to={paths.browse_software()}
-          />
-          <Separator />
-          <HeaderPage
-            text="Create"
-            subtext="add a tutorial or software page"
-            color={header_colors[2]}
-            to={paths.browse_software()}
+            to={paths.browse_blogs()}
           />
         </div>
       )}

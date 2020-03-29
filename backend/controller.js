@@ -106,9 +106,18 @@ export const controllers = {
   get_all: (name, model, opt) => async (req, res) => {
     const q = await model
       .find(opt.params ? opt.params(req) : {}, (err, instances) => {
-        return err || !instances.length
-          ? status(404, res, { error: err || `${name} not found` })
-          : status(200, res, { data: instances });
+        if (!err && instances.length) {
+          if (opt.modify) {
+            return new Promise(async () => {
+              return await opt.modify(instances);
+            }).then(() => {
+              return status(200, res, { data: instances });
+            });
+          } else {
+            return status(200, res, { data: instances });
+          }
+        }
+        return status(404, res, { error: err || `${name} not found` });
       })
       .populate(opt.populate)
       .catch(err => console.error(err));

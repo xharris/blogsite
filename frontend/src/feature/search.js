@@ -61,10 +61,16 @@ const Search = withRouter(props => {
 
   useEffect(() => {
     (async () => {
-      await dbTag.get().then(e => {
-        setTagList(e.data.data);
-        setTagSuggestions(e.data.data);
-      });
+      await dbTag
+        .get()
+        .then(e => {
+          setTagList(e.data.data);
+          setTagSuggestions(e.data.data);
+        })
+        .catch(e => {
+          setTagList([]);
+          setTagSuggestions([]);
+        });
     })();
   }, []);
 

@@ -55,7 +55,7 @@ app.use(morgan("combined")); // tiny/combined
 
 const mongoose = require("mongoose");
 mongoose
-  .connect("mongodb://127.0.0.1:27017/tutsite", {
+  .connect("mongodb://127.0.0.1:27017/blogsite", {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -67,17 +67,13 @@ mongoose.set("useCreateIndex", true);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-const TutorialRouter = require("./api/tutorial").router;
-const TagRouter = require("./api/tag").router;
-const MediaRouter = require("./api/media").router;
-const TutorialPartRouter = require("./api/tutorial_part").router;
-
 app.get("/", (req, res) => {
   res.send("Hello Warudo!");
 });
-app.use("/api", TutorialRouter);
-app.use("/api", TagRouter);
-app.use("/api", MediaRouter);
-app.use("/api", TutorialPartRouter);
+
+const routers = ["blog", "tag", "media", "post", "style"];
+routers.forEach(r => {
+  app.use("/api", require(`./api/${r}`).router);
+});
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

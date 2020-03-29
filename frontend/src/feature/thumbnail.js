@@ -16,7 +16,7 @@ const S = {
 };
 
 export const parseImageData = value =>
-  value.type && value.type === "Buffer"
+  value && value.type && value.type === "Buffer"
     ? Buffer.from(value).toString("utf8")
     : atob(Buffer.from(value).toString("utf8"));
 
@@ -30,6 +30,7 @@ const Thumbnail = props => {
         className: `f-thumbnail ${props.type || "square"} ${props.className ||
           ""}${props.onClick ? " clickable" : " "}`
       }}
+      src={null}
       onClick={props.onClick}
     >
       {Array.isArray(file)
