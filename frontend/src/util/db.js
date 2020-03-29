@@ -28,8 +28,8 @@ export const Post = {
 };
 
 export const Tag = {
-  add: data => inst.post(`/tags/add`, data),
-  get: id => inst.get(`/tags${id ? "/" + id : ""}`)
+  add: data => inst.post(`/tag/add`, data),
+  get: id => inst.get(`/tag${id ? "/" + id : "s"}`)
 };
 
 export const Media = {

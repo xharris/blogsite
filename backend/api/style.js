@@ -13,6 +13,7 @@ const schema = new Schema({
   size: {
     content_container_width: { type: String, default: "initial" }
   },
+  css: { type: String },
   name: { type: String },
 
   date_created: { type: Date, required: true },

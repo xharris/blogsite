@@ -21,7 +21,7 @@ export const parseImageData = value =>
     : atob(Buffer.from(value).toString("utf8"));
 
 const Thumbnail = props => {
-  const [file, setFile] = useState(parseImageData(props.src));
+  const [file, setFile] = useState(props.src ? parseImageData(props.src) : "");
 
   return (
     <S.Thumbnail

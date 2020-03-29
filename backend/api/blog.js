@@ -24,10 +24,10 @@ const controller = build_ctrl({
   ctrls: ["add", "update", "get_by_id", "get_all"],
   ctrl_opt: {
     get_by_id: {
-      populate: [{ path: "tags" }, { path: "thumbnail" }, { path: "style" }]
+      populate: [{ path: "thumbnail" }, { path: "style" }]
     },
     get_all: {
-      populate: [{ path: "tags" }, { path: "thumbnail" }, { path: "style" }]
+      populate: [{ path: "thumbnail" }, { path: "style" }]
     }
   }
 });

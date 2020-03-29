@@ -7,11 +7,14 @@ import "@style/button.scss";
 
 const S = {
   Button: styled.button`
-    background-color: ${props => props.color};
+    // background-color: ${props => props.color};
+    border-color: ${props => darken(0.2, props.color)};
+    color: ${props => darken(0.2, props.color)};
 
     &:hover {
       background-color: ${props => darken(0.1, props.color)} !important;
       border-color: ${props => darken(0.1, props.color)} !important;
+      color: #f5f5f5;
     }
 
     &:active {
@@ -31,7 +34,15 @@ const Button = props => (
       else if (props.onClick) props.onClick(e);
     }}
   >
-    {props.children}
+    {props.icon
+      ? [
+          <i
+            key="icon"
+            className={`material-icons ${props.icon} no-btn-children`}
+          />,
+          <span key="children">{props.children}</span>
+        ]
+      : props.children}
   </S.Button>
 );
 

@@ -21,12 +21,18 @@ const model = mongoose.model("post", schema);
 const controller = build_ctrl({
   name: "Post",
   model: model,
-  ctrls: ["add", "update", "delete", "get_all"],
+  ctrls: ["add", "update", "delete", "get_by_id", "get_all"],
   ctrl_opt: {
     add: {
       modify: (inst, req) => {
         inst.blog_id = req.params.blog_id;
       }
+    },
+    get_by_id: {
+      populate: [{ path: "tags" }, { path: "media" }]
+    },
+    get_all: {
+      populate: [{ path: "tags" }, { path: "media" }]
     }
   }
 });
@@ -34,6 +40,7 @@ const controller = build_ctrl({
 router.post("/blog/:blog_id/post/add", controller.add);
 router.put("/blog/post/:id/update", controller.update);
 router.delete("/blog/post/:id/delete", controller.delete);
+router.get("/blog/post/:blog_id", controller.get_by_id);
 router.get("/blog/:blog_id/posts", controller.get_all);
 
 module.exports = { model, controller, router };

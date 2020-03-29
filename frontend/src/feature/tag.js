@@ -12,20 +12,21 @@ import "@style/tag.scss";
 
 const default_tag_color = "#546E7A";
 
+const S = {
+  Tag: styled(FakeLink)`
+    &.light {
+      color: ${props => props.color || default_tag_color} !important;
+    }
+    &.dark {
+      color: ${props =>
+        lighten(0.4, props.color || default_tag_color)} !important;
+    }
+  `
+};
+
 export const Tag = withRouter(props => {
   const [data, setData] = useState(props.data);
   const [tagValue, setTagValue] = useState(props.value || "");
-
-  const S = {
-    Tag: styled(FakeLink)`
-      &.light {
-        color: ${data.color || default_tag_color} !important;
-      }
-      &.dark {
-        color: ${lighten(0.4, data.color || default_tag_color)} !important;
-      }
-    `
-  };
 
   useEffect(() => {
     if (!data && props.id) {
@@ -48,13 +49,13 @@ export const Tag = withRouter(props => {
   return (
     data && (
       <S.Tag
+        color={data.color}
         text={`#${tagValue}`}
         className={`f-tag ${props.dark ? "dark" : "light"} ${data.type}`}
         onClick={() => {
           if (props.onClick) props.onClick(data);
           else {
             props.history.push({
-              pathname: paths.browse_tutorials(),
               search: `?tags=${encodeURI(data.value)}`
             });
           }

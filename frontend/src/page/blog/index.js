@@ -3,61 +3,80 @@ import { withRouter } from "react-router-dom";
 
 import { Blog, Post } from "@util/db";
 import { useWindowSize } from "@util";
+import paths from "@util/url";
 
 import Header from "@feature/header";
 import Body from "@feature/body";
 import Thumbnail from "@feature/thumbnail";
 import Search from "@feature/search";
 import { Card as PostCard } from "@feature/post";
+import Button from "@feature/button";
 
 import styled from "styled-components";
 import { darken, transparentize } from "polished";
 import "./index.scss";
 
+const get_color = (props, key, _default) =>
+  props.style ? props.style.color[key] : _default;
+
 const S = {
   Body: styled(Body)`
     .right {
       * {
-        scrollbar-color: ${props =>
-            props.style ? props.style.color.secondary : "#757575"}
+        scrollbar-color: ${props => get_color(props, "secondary", "#757575")}
           rgba(224, 224, 224, 0.1) !important;
       }
 
       *::-webkit-scrollbar-thumb {
         background-color: ${props =>
-          props.style ? props.style.color.secondary : "#757575"} !important;
+          get_color(props, "secondary", "#757575")} !important;
       }
 
       background: linear-gradient(
         to right,
         transparent,
-        ${props =>
-            transparentize(
-              0.25,
-              props.style ? props.style.color.primary : "#FFF"
-            )}
+        ${props => transparentize(0.25, get_color(props, "primary", "#FFF"))}
           30%
       );
 
       .posts {
         border-bottom: 1px solid
-          ${props =>
-            transparentize(
-              0.5,
-              props.style ? props.style.color.secondary : "#000"
-            )};
+          ${props => transparentize(0.5, get_color(props, "secondary", "#000"))};
+      }
+
+      .posts .f-post-card {
+        border-color: ${props =>
+          transparentize(0.9, get_color(props, "primary", "#212121"))};
+      }
+
+      .posts .f-post-card:hover {
+        border-color: ${props =>
+          transparentize(0.65, get_color(props, "primary", "#212121"))};
+      }
+
+      .btn-search,
+      .actions .f-button {
+        border-color: ${props =>
+          darken(0.2, get_color(props, "secondary", "#000"))};
+        color: ${props => darken(0.2, get_color(props, "secondary", "#000"))};
+
+        &:hover {
+          color: #f5f5f5;
+        }
       }
     }
 
     .f-search input {
       background-color: ${props =>
-        darken(0.5, props.style ? props.style.color.primary : "#FFF")};
+        darken(0.5, get_color(props, "primary", "#fff"))};
     }
 
     .left {
       background-position: ${props =>
         props.thumbnail ? props.thumbnail.position : "center"};
     }
+
+    ${props => (props.css ? props.css : "")}
   `
 };
 
@@ -118,7 +137,7 @@ export const BlogView = withRouter(props => {
 
   useEffect(() => {
     filter();
-  }, [postList, searchValue]);
+  }, [searchValue]);
 
   return (
     <S.Body
@@ -127,6 +146,7 @@ export const BlogView = withRouter(props => {
       style={data ? data.style : null}
       thumbnail={data ? data.thumbnail : null}
     >
+      <Thumbnail />
       {data && [
         <Thumbnail
           key="left"
@@ -153,12 +173,52 @@ export const BlogView = withRouter(props => {
           }}
         >
           <div className="blog-title">{data.title}</div>
-          <Search onChange={e => setSearchValue(e)} />
           <div className="posts">
+            <div className="blog-description">{data.description}</div>
+            <Search
+              onChange={e => setSearchValue(e)}
+              searchbutton={{ color: get_color(data, "secondary", "#757575") }}
+              cancelbutton={{ color: get_color(data, "primary", "#212121") }}
+            />
             {filteredList &&
               filteredList.map(t => (
                 <PostCard key={t._id} data={t} styledata={data.style} />
               ))}
+          </div>
+          <div className="actions">
+            {/* Blog Actions: Follow */}
+            <Button color={get_color(data, "secondary", "#757575")} icon="add">
+              follow
+            </Button>
+
+            {/* Blog Actions: Share */}
+            <Button
+              color={get_color(data, "secondary", "#757575")}
+              icon="share"
+            >
+              share
+            </Button>
+
+            {/* Blog Actions: RSS */}
+            <Button
+              color={get_color(data, "secondary", "#757575")}
+              icon="rss_feed"
+            >
+              RSS
+            </Button>
+
+            {/* Blog Actions: Add Post */}
+            <Button
+              color={get_color(data, "secondary", "#757575")}
+              onClick={e => {
+                props.history.push({
+                  pathname: paths.new_post(data._id)
+                });
+              }}
+              icon="note_add"
+            >
+              post
+            </Button>
           </div>
         </div>
       ]}
