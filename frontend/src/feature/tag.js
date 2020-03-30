@@ -49,7 +49,7 @@ export const Tag = withRouter(props => {
   return (
     data && (
       <S.Tag
-        color={data.color}
+        color={props.color}
         text={`#${tagValue}`}
         className={`f-tag ${props.dark ? "dark" : "light"} ${data.type}`}
         onClick={() => {

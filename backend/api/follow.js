@@ -5,8 +5,9 @@ const express = require("express");
 const router = express.Router();
 
 const schema = new Schema({
+  type: { type: String }, // blog, post, style, user, etc
   user_id: { type: mongoose.Schema.Types.ObjectId },
-  blog_id: { type: mongoose.Schema.Types.ObjectId },
+  other_id: { type: mongoose.Schema.Types.ObjectId }, // what is being followed
 
   date_created: { type: Date, required: true },
   date_modified: { type: Date, required: true }
@@ -20,9 +21,9 @@ const controller = build_ctrl({
   ctrls: ["add", "delete", "get_all"]
 });
 
-router.post("/follow/user/:user_id/blog/:blog_id", controller.add);
-router.delete("/unfollow/user/:user_id/blog/:blog_id", controller.delete);
-router.get("/following/:user_id", controller.get_all);
-router.get("/followers/:blog_id", controller.get_all);
+router.post("/follow/:type/:other_id/user/:user_id", controller.add);
+router.delete("/unfollow/:type/:other_id/user/:user_id", controller.delete);
+router.get("/following/user/:user_id", controller.get_all);
+router.get("/followers/:type/:other_id", controller.get_all);
 
 module.exports = { model, controller, router };

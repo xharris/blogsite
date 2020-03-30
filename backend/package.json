@@ -15,8 +15,10 @@
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "helmet": "^3.21.1",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.19.5",
     "mongoose": "^5.9.5",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "secure-password": "^3.1.0"
   }
 }

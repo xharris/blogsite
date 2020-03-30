@@ -71,7 +71,7 @@ app.get("/", (req, res) => {
   res.send("Hello Warudo!");
 });
 
-const routers = ["blog", "tag", "media", "post", "style"];
+const routers = ["blog", "tag", "media", "post", "style", "user"];
 routers.forEach(r => {
   app.use("/api", require(`./api/${r}`).router);
 });

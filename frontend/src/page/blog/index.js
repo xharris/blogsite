@@ -71,7 +71,7 @@ const S = {
         darken(0.5, get_color(props, "primary", "#fff"))};
     }
 
-    .left {
+    .bg {
       background-position: ${props =>
         props.thumbnail ? props.thumbnail.position : "center"};
     }
@@ -148,11 +148,7 @@ export const BlogView = withRouter(props => {
     >
       <Thumbnail />
       {data && [
-        <Thumbnail
-          key="left"
-          className="left"
-          src={data.thumbnail.binary_value}
-        />,
+        <Thumbnail key="bg" className="bg" src={data.thumbnail.binary_value} />,
         <div
           key="blur-bg"
           className="blur-bg"
@@ -165,6 +161,14 @@ export const BlogView = withRouter(props => {
           <Thumbnail src={data.thumbnail.binary_value} />
         </div>,
         <div
+          key="left"
+          className="left"
+          style={{ paddingRight: rightDivWidth + 24 }}
+        >
+          <div className="blog-title">{data.title}</div>
+          <div className="blog-description">{data.description}</div>
+        </div>,
+        <div
           key="right"
           className="right"
           ref={rightDiv}
@@ -172,9 +176,9 @@ export const BlogView = withRouter(props => {
             maxWidth: rightDivWidth
           }}
         >
-          <div className="blog-title">{data.title}</div>
+          {/*<div className="blog-title">{data.title}</div>*/}
           <div className="posts">
-            <div className="blog-description">{data.description}</div>
+            {/*<div className="blog-description">{data.description}</div>*/}
             <Search
               onChange={e => setSearchValue(e)}
               searchbutton={{ color: get_color(data, "secondary", "#757575") }}

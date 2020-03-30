@@ -1,7 +1,10 @@
+import { model as UserModel, verify_password } from "./api/models/user";
+const jwt = require("jsonwebtoken");
+
 export const status = (code, res, props) => res.status(code).json({ ...props });
 
 export const controllers = {
-  add: (name, model, opt) => (req, res) => {
+  add: (name, model, opt) => async (req, res) => {
     const body = req.body;
     if (!body) return status(400, res, { message: `Provide a ${name}` });
 
@@ -13,34 +16,42 @@ export const controllers = {
     instance.date_created = Date.now();
     instance.date_modified = Date.now();
 
+    const save = () =>
+      instance
+        .save()
+        .then(() => {
+          if (opt.after) return opt.after(instance);
+          return status(201, res, {
+            id: instance._id,
+            message: `${name} created!`
+          });
+        })
+        .then(() => {})
+        .catch(async err => {
+          if (err.code === 11000) {
+            const find_existing = async () =>
+              await model.findOne(err.keyValue, (err, inst2) => inst2.data);
+
+            return status(200, res, {
+              data: await find_existing(),
+              message: `${name} already exists!`
+            });
+          } else {
+            return status(400, res, { err, message: `${name} not created!` });
+          }
+        });
+
     if (opt.modify) {
       var ret = opt.modify(instance, req, res);
       if (ret) return ret;
+      return await save();
+    } else if (opt.modify_async) {
+      var ret = await opt.modify_async(instance, req, res);
+      if (ret) return ret;
+      return await save();
+    } else {
+      return await save();
     }
-
-    instance
-      .save()
-      .then(() => {
-        if (opt.after) return opt.after(instance);
-        return status(201, res, {
-          id: instance._id,
-          message: `${name} created!`
-        });
-      })
-      .then(() => {})
-      .catch(async err => {
-        if (err.code === 11000) {
-          const find_existing = async () =>
-            await model.findOne(err.keyValue, (err, inst2) => inst2.data);
-
-          return status(200, res, {
-            data: await find_existing(),
-            message: `${name} already exists!`
-          });
-        } else {
-          return status(400, res, { err, message: `${name} not created!` });
-        }
-      });
   },
 
   update: (name, model, opt) => async (req, res) => {
@@ -50,7 +61,6 @@ export const controllers = {
     model.findOne({ _id: req.params.id }, (err, instance) => {
       if (err) return status(404, res, { err, message: `${name} not found!` });
       if (!instance) return status(400, res, { message: err });
-
       for (var key in body) {
         instance[key] = opt.body_mod
           ? opt.body_mod(key, instance[key], body[key], req) || body[key]
@@ -139,6 +149,38 @@ const build_ctrl = opt => {
     if (controllers[key])
       ret_obj[key] = use_ctrl(key, opt.name, opt.model, ctrl_opt);
   }
+
+  if (opt.requires_auth)
+    for (var key of opt.requires_auth) {
+      const ctrl_opt =
+        opt.ctrl_opt && opt.ctrl_opt[key] ? opt.ctrl_opt[key] : {};
+      if (ret_obj[key]) {
+        ret_obj[key] = async (req, res) => {
+          try {
+            const user_info = await jwt.verify(
+              req.body.token || "",
+              process.env.JWT_KEY
+            );
+            return await UserModel.findOne(
+              { username: user_info.data.user },
+              async (err, instance) => {
+                const valid = await verify_password(
+                  user_info.data.password,
+                  instance.password
+                );
+                return valid === true
+                  ? await use_ctrl(key, opt.name, opt.model, ctrl_opt)(req, res)
+                  : status(401, res, { error: `You must be logged in` });
+              }
+            ).catch(err =>
+              status(401, res, { error: `You must be logged in` })
+            );
+          } catch (err) {
+            return status(401, res, { error: `You must be logged in` });
+          }
+        };
+      }
+    }
 
   return ret_obj;
 };

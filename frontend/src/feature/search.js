@@ -4,7 +4,6 @@ import { withRouter } from "react-router-dom";
 
 import { Tag as dbTag } from "@util/db";
 
-import FakeLink from "@feature/fakelink";
 import { TagList } from "@feature/tag";
 import Button from "@feature/button";
 

@@ -43,6 +43,11 @@ export const Style = {
   get_by_post_id: post_id => inst.get(`/style/post/${post_id}`)
 };
 
+export const Follow = {
+  add_blog: (user_id, blog_id) =>
+    inst.put(`/follow/blog/${blog_id}/user/${user_id}`)
+};
+
 export const User = {};
 
 const api = {
@@ -51,7 +56,8 @@ const api = {
   Tag,
   User,
   Media,
-  Style
+  Style,
+  Follow
 };
 
 export default api;
