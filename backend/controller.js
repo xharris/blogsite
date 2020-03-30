@@ -1,41 +1,57 @@
 import { model as UserModel, verify_password } from "./api/models/user";
 const jwt = require("jsonwebtoken");
 
-export const status = (code, res, props) => res.status(code).json({ ...props });
+export const status = (code, res, props) =>
+  res ? res.status(code).json({ ...props }) : { code: code, ...props };
+export const prep_new_instance = inst => {
+  inst.date_created = Date.now();
+  inst.date_modified = Date.now();
+  return inst;
+};
 
 export const controllers = {
   add: (name, model, opt) => async (req, res) => {
     const body = req.body;
     if (!body) return status(400, res, { message: `Provide a ${name}` });
 
+    if (opt.body_mod) {
+      await opt.body_mod(body, req);
+    }
+
     const instance = new model(body);
     if (!instance) {
       return status(400, res, { message: err });
     }
+    prep_new_instance(instance);
 
-    instance.date_created = Date.now();
-    instance.date_modified = Date.now();
-
-    const save = () =>
-      instance
+    const save = async () =>
+      await instance
         .save()
-        .then(() => {
-          if (opt.after) return opt.after(instance);
-          return status(201, res, {
-            id: instance._id,
-            message: `${name} created!`
-          });
+        .then(async () => {
+          if (opt.after) {
+            return await opt.after(instance);
+          } else {
+            return status(201, res, {
+              id: instance._id,
+              message: `${name} created!`
+            });
+          }
         })
-        .then(() => {})
         .catch(async err => {
           if (err.code === 11000) {
-            const find_existing = async () =>
-              await model.findOne(err.keyValue, (err, inst2) => inst2.data);
+            const existing_inst = await model.findOne(
+              err.keyValue,
+              (err, inst2) => inst2.data
+            );
 
-            return status(200, res, {
-              data: await find_existing(),
-              message: `${name} already exists!`
-            });
+            if (opt.after) {
+              return await opt.after(existing_inst, req, res);
+            } else {
+              return status(200, res, {
+                data: existing_inst,
+                message: `${name} already exists!`
+              });
+            }
           } else {
             return status(400, res, { err, message: `${name} not created!` });
           }
@@ -88,9 +104,13 @@ export const controllers = {
     });
   },
 
-  delete: (name, model) => async (req, res) => {
+  delete: (name, model, opt) => async (req, res) => {
+    var body = req.body || { _id: req.params.id };
+    if (opt.body_mod) {
+      await opt.body_mod(body, req);
+    }
     await model
-      .findOneAndDelete({ _id: req.params.id }, (err, instance) => {
+      .findOneAndDelete(body, (err, instance) => {
         return err || !instance
           ? status(400, res, { error: err || `${name} not found` })
           : status(200, res, { data: instance });
@@ -151,10 +171,10 @@ const build_ctrl = opt => {
   }
 
   if (opt.requires_auth)
-    for (var key of opt.requires_auth) {
-      const ctrl_opt =
-        opt.ctrl_opt && opt.ctrl_opt[key] ? opt.ctrl_opt[key] : {};
+    Object.keys(opt.requires_auth).forEach(key => {
       if (ret_obj[key]) {
+        const ctrl_opt =
+          opt.ctrl_opt && opt.ctrl_opt[key] ? opt.ctrl_opt[key] : {};
         ret_obj[key] = async (req, res) => {
           try {
             const user_info = await jwt.verify(
@@ -180,7 +200,7 @@ const build_ctrl = opt => {
           }
         };
       }
-    }
+    });
 
   return ret_obj;
 };

@@ -8,7 +8,11 @@ export const Blog = {
   add: data => inst.post("/blog/add", data),
   update: data => inst.put(`/blog/${data._id}/update`, data),
   delete: id => inst.post(`/blog/${id}/delete`, { deleted: true }),
-  get: id => inst.get(`/blog${id ? "/" + id : "s"}`)
+  get: id => inst.get(`/blog${id ? "/" + id : "s"}`),
+  follow: (blog_id, user_id, token) =>
+    inst.put(`/follow/blog/${blog_id}/user/${user_id}`, { token }),
+  unfollow: (blog_id, user_id, token) =>
+    inst.delete(`/unfollow/blog/${blog_id}/user/${user_id}`, { token })
 };
 
 export const Post = {
@@ -43,14 +47,12 @@ export const Style = {
   get_by_post_id: post_id => inst.get(`/style/post/${post_id}`)
 };
 
-export const Follow = {
-  add_blog: (user_id, blog_id) =>
-    inst.put(`/follow/blog/${blog_id}/user/${user_id}`)
-};
-
 export const User = {
   login: (username, password) =>
-    inst.post(`/user/login`, { username, password })
+    inst.post(`/user/login`, { username, password }),
+  checkAuth: token => inst.post(`/user/checkAuth`, { token }),
+  following: (user_id, _type, other_id) =>
+    inst.get(`/following/${_type}/${other_id}/user/${user_id}`)
 };
 
 const api = {
@@ -59,8 +61,7 @@ const api = {
   Tag,
   User,
   Media,
-  Style,
-  Follow
+  Style
 };
 
 export default api;

@@ -13,12 +13,8 @@ export const verify_password = async (password, hash) => {
 };
 
 const schema = new Schema({
-  username: { type: String },
+  username: { type: String, unique: true },
   password: { type: String },
-  info: {
-    name: { type: String },
-    email: { type: String }
-  },
   deleted: { type: Boolean, default: false },
 
   date_created: { type: Date, required: true },

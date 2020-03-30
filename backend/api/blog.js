@@ -9,6 +9,7 @@ const schema = new Schema({
   description: { type: String },
   likes: { type: Number, default: 0 },
   thumbnail: { type: mongoose.Schema.Types.ObjectId, ref: "media" },
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
   deleted: { type: Boolean, default: false },
   style: { type: mongoose.Schema.Types.ObjectId, ref: "style" },
 
@@ -24,10 +25,10 @@ const controller = build_ctrl({
   ctrls: ["add", "update", "get_by_id", "get_all"],
   ctrl_opt: {
     get_by_id: {
-      populate: [{ path: "thumbnail" }, { path: "style" }]
+      populate: [{ path: "thumbnail" }, { path: "style" }, { path: "user_id" }]
     },
     get_all: {
-      populate: [{ path: "thumbnail" }, { path: "style" }]
+      populate: [{ path: "thumbnail" }, { path: "style" }, { path: "user_id" }]
     }
   }
 });

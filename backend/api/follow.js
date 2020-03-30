@@ -18,12 +18,30 @@ const model = mongoose.model("follow", schema);
 const controller = build_ctrl({
   name: "Follow",
   model: model,
-  ctrls: ["add", "delete", "get_all"]
+  ctrls: ["add", "delete", "get_all"],
+  requires_auth: ["add", "delete"],
+  ctrl_opt: {
+    add: {
+      body_mod: (body, req) => {
+        body.type = req.params.type;
+        body.user_id = req.params.user_id;
+        body.other_id = req.params.other_id;
+      }
+    },
+    delete: {
+      body_mod: (body, req) => {
+        body.type = req.params.type;
+        body.user_id = req.params.user_id;
+        body.other_id = req.params.other_id;
+      }
+    }
+  }
 });
 
-router.post("/follow/:type/:other_id/user/:user_id", controller.add);
+router.put("/follow/:type/:other_id/user/:user_id", controller.add);
 router.delete("/unfollow/:type/:other_id/user/:user_id", controller.delete);
 router.get("/following/user/:user_id", controller.get_all);
+router.get("/following/:type/:other_id/user/:user_id", controller.get_all);
 router.get("/followers/:type/:other_id", controller.get_all);
 
 module.exports = { model, controller, router };

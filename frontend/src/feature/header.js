@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { NavLink, Link, withRouter } from "react-router-dom";
 
-import authContext from "@util/authContext";
+import { useAuthContext } from "@util/authContext";
 import paths from "@util/url";
 
 import Thumbnail from "@feature/thumbnail";
@@ -52,7 +52,7 @@ const Separator = () => <div className="separator" />;
 const header_colors = ["#3F51B5", "#0D47A1", "#0277BD"];
 
 const Header = withRouter(props => {
-  const { user, loginModal } = useContext(authContext);
+  const { user, showLoginModal } = useAuthContext();
 
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
 
@@ -111,7 +111,7 @@ const Header = withRouter(props => {
               <FakeLink
                 className="login"
                 text={"Login"}
-                onClick={() => loginModal()}
+                onClick={() => showLoginModal()}
               />
             </>
           )}

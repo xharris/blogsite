@@ -1,7 +1,14 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useLayoutEffect
+} from "react";
 import { withRouter } from "react-router-dom";
 
-import { Blog, Post } from "@util/db";
+import { useAuthContext } from "@util/authContext";
+import { Blog, Post, User } from "@util/db";
 import { useWindowSize } from "@util";
 import paths from "@util/url";
 
@@ -86,9 +93,37 @@ export const BlogView = withRouter(props => {
   const [filteredList, setFilteredList] = useState(null);
   const [searchValue, setSearchValue] = useState(null);
   const [rightDivWidth, setRightDivWidth] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const windowSize = useWindowSize();
   const rightDiv = useRef(null);
+  const { user } = useAuthContext();
+
+  const follow_blog = async () => {
+    if (!isFollowing && user) {
+      Blog.follow(data._id, user._id, user.token)
+        .then(e => {
+          console.log("good follow");
+          setIsFollowing(true);
+        })
+        .catch(e => {
+          console.log("not following");
+        });
+    }
+  };
+
+  const unfollow_blog = async () => {
+    if (isFollowing && user) {
+      Blog.unfollow(data._id, user._id, user.token)
+        .then(e => {
+          console.log("good unfollow");
+          setIsFollowing(false);
+        })
+        .catch(e => {
+          console.log("bad unfollow");
+        });
+    }
+  };
 
   const filter = useCallback(() => {
     if (searchValue && postList) {
@@ -135,6 +170,17 @@ export const BlogView = withRouter(props => {
     }
   }, [props.match.params.id]);
 
+  useLayoutEffect(() => {
+    if (user && data)
+      User.following(user._id, "blog", data._id)
+        .then(e => {
+          setIsFollowing(true);
+        })
+        .catch(e => {
+          setIsFollowing(false);
+        });
+  }, [user, data]);
+
   useEffect(() => {
     filter();
   }, [searchValue, filter]);
@@ -158,6 +204,7 @@ export const BlogView = withRouter(props => {
             }px, ${windowSize.width - rightDivWidth}px)`
           }}
         >
+          {/* TODO use canvas here instead for blurring */}
           <Thumbnail src={data.thumbnail.binary_value} />
         </div>,
         <div
@@ -191,9 +238,16 @@ export const BlogView = withRouter(props => {
           </div>
           <div className="actions">
             {/* Blog Actions: Follow */}
-            <Button color={get_color(data, "secondary", "#757575")} icon="add">
-              follow
-            </Button>
+
+            {
+              <Button
+                color={get_color(data, "secondary", "#757575")}
+                icon={isFollowing ? "remove" : "add"}
+                onClick={isFollowing ? unfollow_blog : follow_blog}
+              >
+                {isFollowing ? "unfollow" : "follow"}
+              </Button>
+            }
 
             {/* Blog Actions: Share */}
             <Button

@@ -4,6 +4,7 @@ import "purecss";
 import "@style/index.scss";
 
 import authContext from "@util/authContext";
+import { User } from "@util/db";
 import paths from "@util/url";
 
 import Home from "@page/home";
@@ -14,23 +15,45 @@ import { SignInModal } from "@feature/signin";
 
 const Cookies = require("js-cookie");
 
+const login = e => {
+  console.log(e);
+  Cookies.set("user", e);
+  window.location.reload();
+};
+
+const logout = () => {
+  //Cookies.remove("user");
+  //window.location.reload();
+};
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   useLayoutEffect(() => {
-    (async () => {
-      // await User.get("1").then(user => {
-      //   setUser(user.data);
-      // });
-    })();
-    const user = Cookies.get("user");
-    if (user) setUser(user);
-  });
+    const ck_user = Cookies.get("user");
+    if (ck_user) {
+      (async () => {
+        await User.checkAuth(JSON.parse(ck_user).token)
+          .then(e => {
+            console.log("Auth success");
+            setUser(JSON.parse(ck_user));
+          })
+          .catch(e => {
+            console.error("Auth failed", e);
+            logout();
+          });
+      })();
+    }
+  }, []);
 
   return (
     <authContext.Provider
-      value={{ user: user, loginModal: () => setLoginModalOpen(true) }}
+      value={{
+        user: user,
+        showLoginModal: () => setLoginModalOpen(true),
+        logout: logout
+      }}
     >
       <BrowserRouter className="app">
         <Switch>
@@ -42,10 +65,7 @@ const App = () => {
         <SignInModal
           is_open={loginModalOpen}
           onClose={() => setLoginModalOpen(false)}
-          onSignIn={e => {
-            Cookies.set("user", e);
-            window.location.reload();
-          }}
+          onSignIn={login}
         />
       </BrowserRouter>
     </authContext.Provider>

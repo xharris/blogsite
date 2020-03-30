@@ -1,5 +1,6 @@
-import build_ctrl, { status } from "../controller";
+import build_ctrl, { status, prep_new_instance } from "../controller";
 import { model, verify_password } from "./models/user";
+const { model: user_info_model } = require("./user_info");
 const express = require("express");
 const router = express.Router();
 const securePassword = require("secure-password");
@@ -15,6 +16,27 @@ const controller = build_ctrl({
     add: {
       modify_async: async instance => {
         instance.password = await pwd.hash(Buffer.from(instance.password));
+      },
+      after: async (instance, req, res) => {
+        var info_inst = new user_info_model(
+          prep_new_instance({ user_id: instance._id })
+        );
+        return await info_inst
+          .save()
+          .then(e => {
+            return status(200, res, {
+              id: e._id,
+              data: e,
+              message: `User info created`
+            });
+          })
+          .catch(e => {
+            return status(200, res, {
+              id: e._id,
+              data: e,
+              message: `User info already exists!`
+            });
+          });
       }
     }
   }
@@ -85,8 +107,37 @@ const login = async (req, res) => {
   );
 };
 
+const checkAuth = async (req, res) => {
+  return new Promise(async (_res, _rej) => {
+    try {
+      _res(jwt.verify(req.body.token || "", process.env.JWT_KEY));
+    } catch (e) {
+      return status(401, res, {
+        message: `Authentication failed: token invalid`
+      });
+    }
+  }).then(async user_info => {
+    return await model
+      .findOne({ username: user_info.data.user }, async (err, instance) => {
+        const valid = await verify_password(
+          user_info.data.password,
+          instance.password
+        );
+        return valid === true
+          ? status(200, res, { message: "Authentication success" })
+          : status(401, res, {
+              error: `Authentication failed: bad credentials`
+            });
+      })
+      .catch(err =>
+        status(401, res, { error: `Authentication failed: User no found` })
+      );
+  });
+};
+
 router.post("/user/add", controller.add);
 router.post("/user/login", login);
+router.post("/user/checkAuth", checkAuth);
 router.post("/user/:id", controller.get_by_id);
 router.put("/user/:id/update", controller.update);
 router.post("/user/:id/delete", controller.update);

@@ -90,6 +90,10 @@ const Search = withRouter(props => {
   useEffect(() => {
     triggerOnChange();
     if (searchActive) resetTagSuggestions();
+    else if (el_input.current) {
+      el_input.current.value = "";
+      setSearchValue("");
+    }
   }, [searchActive]);
 
   useEffect(() => {

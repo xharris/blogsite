@@ -63,15 +63,24 @@ mongoose
     console.error("Connection error", e.message);
   });
 mongoose.set("useCreateIndex", true);
-
 const db = mongoose.connection;
+
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 app.get("/", (req, res) => {
   res.send("Hello Warudo!");
 });
 
-const routers = ["blog", "tag", "media", "post", "style", "user"];
+const routers = [
+  "blog",
+  "tag",
+  "media",
+  "post",
+  "style",
+  "user",
+  "follow",
+  "user_info"
+];
 routers.forEach(r => {
   app.use("/api", require(`./api/${r}`).router);
 });
