@@ -11,7 +11,7 @@ import img_world from "@image/world.png";
 import img_logo from "@front/logo48.png";
 
 import styled from "styled-components";
-import { rgba, darken, lighten } from "polished";
+import { rgba, darken } from "polished";
 import "@style/header.scss";
 
 const S = {
@@ -52,10 +52,9 @@ const Separator = () => <div className="separator" />;
 const header_colors = ["#3F51B5", "#0D47A1", "#0277BD"];
 
 const Header = withRouter(props => {
-  const { user } = useContext(authContext);
+  const { user, loginModal } = useContext(authContext);
 
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   return (
     <div className="f-header">
@@ -112,7 +111,7 @@ const Header = withRouter(props => {
               <FakeLink
                 className="login"
                 text={"Login"}
-                onClick={() => setLoginModalOpen(true)}
+                onClick={() => loginModal()}
               />
             </>
           )}

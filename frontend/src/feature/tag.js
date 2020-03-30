@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 import { Tag as dbTag } from "@util/db";
-import paths from "@util/url";
 
 import FakeLink from "@feature/fakelink";
 
@@ -36,7 +35,7 @@ export const Tag = withRouter(props => {
         });
       })();
     }
-  }, []);
+  }, [data, props.id]);
 
   useEffect(() => {
     if (data)

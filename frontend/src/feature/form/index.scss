@@ -1,7 +1,9 @@
-@import "variables";
+@import "@style/variables";
 
 .f-form {
   align-items: flex-start;
+  padding: 0px 3px;
+  box-sizing: border-box;
 
   .form-group {
     display: flex;

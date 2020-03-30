@@ -28,7 +28,9 @@ const Button = props => (
   <S.Button
     type="button"
     {...props}
-    className={`f-button ${props.className || ""}`}
+    className={`f-button ${
+      props.children ? "" : "no-btn-children"
+    } ${props.className || ""}`}
     onClick={e => {
       if (props.to) props.history.push(props.to);
       else if (props.onClick) props.onClick(e);
@@ -36,11 +38,8 @@ const Button = props => (
   >
     {props.icon
       ? [
-          <i
-            key="icon"
-            className={`material-icons ${props.icon} no-btn-children`}
-          />,
-          <span key="children">{props.children}</span>
+          <i key="icon" className={`material-icons ${props.icon}`} />,
+          props.children && <span key="children">{props.children}</span>
         ]
       : props.children}
   </S.Button>

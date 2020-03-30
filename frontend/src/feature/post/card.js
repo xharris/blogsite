@@ -44,7 +44,7 @@ const Card = withRouter(props => {
     } else {
       // Style.get_by_post_id
     }
-  }, []);
+  }, [props.data, props.id, props.styledata]);
 
   useEffect(() => {
     if (data)

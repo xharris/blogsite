@@ -14,9 +14,8 @@ const Modal = props => (
       className="modal-close rounded"
       color={"#90a4ae"}
       onClick={props.onClose}
-    >
-      <i className="material-icons">close</i>
-    </Button>
+      icon="close"
+    />
     <div className={`modal-body ${props.className}`}>{props.children}</div>
   </ReactModal>
 );

@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { withRouter } from "react-router-dom";
 
 import { Blog, Post } from "@util/db";
 import { useWindowSize } from "@util";
 import paths from "@util/url";
 
-import Header from "@feature/header";
+// import Header from "@feature/header";
 import Body from "@feature/body";
 import Thumbnail from "@feature/thumbnail";
 import Search from "@feature/search";
@@ -90,7 +90,7 @@ export const BlogView = withRouter(props => {
   const windowSize = useWindowSize();
   const rightDiv = useRef(null);
 
-  const filter = () => {
+  const filter = useCallback(() => {
     if (searchValue && postList) {
       setFilteredList(
         postList.filter(t => {
@@ -108,7 +108,7 @@ export const BlogView = withRouter(props => {
         })
       );
     }
-  };
+  }, [searchValue, postList]);
 
   useEffect(() => {
     const blog_id = props.match.params.id;
@@ -133,11 +133,11 @@ export const BlogView = withRouter(props => {
       };
       fetch_data();
     }
-  }, []);
+  }, [props.match.params.id]);
 
   useEffect(() => {
     filter();
-  }, [searchValue]);
+  }, [searchValue, filter]);
 
   return (
     <S.Body

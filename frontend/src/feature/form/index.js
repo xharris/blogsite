@@ -5,7 +5,7 @@ import "react-datetime/css/react-datetime.css";
 
 import Button from "@feature/button";
 
-import "@style/form.scss";
+import "./index.scss";
 import { recursiveMap } from "@util";
 
 export const Label = props =>
@@ -182,9 +182,11 @@ const Form = props => {
         if (props.onSubmit) {
           e.preventDefault();
           var outputs = Object.assign(inputs, {});
-          props.inputs.map(i => {
-            if (i.value) outputs[i.name] = i.value;
-          });
+          console.log(inputs);
+          if (props.inputs)
+            props.inputs.forEach(i => {
+              if (i.value) outputs[i.name] = i.value;
+            });
           props.onSubmit(outputs);
         }
       }}

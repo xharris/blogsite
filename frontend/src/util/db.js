@@ -8,7 +8,7 @@ export const Blog = {
   add: data => inst.post("/blog/add", data),
   update: data => inst.put(`/blog/${data._id}/update`, data),
   delete: id => inst.post(`/blog/${id}/delete`, { deleted: true }),
-  get: id => inst.get(`/blog${id ? "/" + id : ""}`)
+  get: id => inst.get(`/blog${id ? "/" + id : "s"}`)
 };
 
 export const Post = {
@@ -48,7 +48,10 @@ export const Follow = {
     inst.put(`/follow/blog/${blog_id}/user/${user_id}`)
 };
 
-export const User = {};
+export const User = {
+  login: (username, password) =>
+    inst.post(`/user/login`, { username, password })
+};
 
 const api = {
   Blog,

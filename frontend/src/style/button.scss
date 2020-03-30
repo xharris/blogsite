@@ -30,7 +30,7 @@
     font-size: 15px;
   }
 
-  &:hover .material-icons:not(.no-btn-children) {
+  &:hover:not(.no-btn-children) .material-icons {
     margin-right: 3px;
   }
 
@@ -45,7 +45,7 @@
     max-width: 50px;
   }
 
-  &.round {
+  &.rounded {
     border-radius: 100%;
     width: 26px;
     height: 26px;

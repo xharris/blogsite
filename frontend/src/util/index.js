@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 export const color = {
   red: "#e57373"
@@ -67,7 +67,7 @@ export const recursiveMap = (children, fn, exclude) => {
 
 export const bytesToSize = bytes => {
   var sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-  if (bytes == 0) return "0 Byte";
+  if (bytes === 0) return "0 Byte";
   var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
   return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
 };
@@ -75,12 +75,12 @@ export const bytesToSize = bytes => {
 export const useWindowSize = () => {
   const isClient = typeof window === "object";
 
-  function getSize() {
+  const getSize = useCallback(() => {
     return {
       width: isClient ? window.innerWidth : undefined,
       height: isClient ? window.innerHeight : undefined
     };
-  }
+  }, [isClient]);
 
   const [windowSize, setWindowSize] = useState(getSize);
   useEffect(() => {
@@ -94,7 +94,7 @@ export const useWindowSize = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []); // Empty array ensures that effect is only run on mount and unmount
+  }, [getSize, isClient]); // Empty array ensures that effect is only run on mount and unmount
 
   return windowSize;
 };
