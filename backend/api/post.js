@@ -3,12 +3,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const express = require("express");
 const router = express.Router();
+const shortid = require("shortid");
 
 const schema = new Schema({
+  _id: { type: String, default: shortid.generate },
   blog_id: { type: mongoose.Schema.Types.ObjectId },
-  title: { type: String, required: true },
+  title: { type: String },
   body: { type: String },
-  media: { type: mongoose.Schema.Types.ObjectId, ref: "media" },
+  media: [{ type: mongoose.Schema.Types.ObjectId, ref: "media" }],
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: "tag" }],
   likes: { type: Number, default: 0 },
 

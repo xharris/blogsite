@@ -10,6 +10,7 @@ const schema = new Schema({
   binary_value: { type: Buffer },
   position: { type: String, default: "center" },
   mime_type: { type: String },
+  user_id: { type: mongoose.Schema.Types.ObjectId, required: true },
 
   date_created: { type: Date, required: true },
   date_modified: { type: Date, required: true }

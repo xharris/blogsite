@@ -68,18 +68,23 @@ Tag.defaultProps = {
   type: "light"
 };
 
-export const TagList = props => (
+export const TagList = withRouter(props => (
   <div className="f-tag-list">
-    {props.data_list &&
-      props.data_list.map(t => (
+    {props.data &&
+      props.data.map(t => (
         <Tag
           key={t._id}
           data={t}
           dark={props.dark}
           onClick={() => {
             if (props.onClick) props.onClick(t);
+            else {
+              props.history.push({
+                search: `?tags=${encodeURI(t.value)}`
+              });
+            }
           }}
         />
       ))}
   </div>
-);
+));

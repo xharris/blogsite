@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import queryString from "query-string";
 import { withRouter } from "react-router-dom";
 
@@ -15,7 +15,6 @@ const Search = withRouter(props => {
   const [tagList, setTagList] = useState(props.tagList);
   const [tagSuggestions, setTagSuggestions] = useState(null);
   const [searchValue, setSearchValue] = useState("");
-  const [defaultSearchValue, setDefaultSearchValue] = useState(null);
   const [searchActive, setSearchActive] = useState(false);
 
   const el_input = useRef();
@@ -25,14 +24,16 @@ const Search = withRouter(props => {
       var value = searchActive ? el_input.current.value : "";
       var text = [],
         tags = [];
-      value
-        .trim()
-        .replace(/\s+/g, " ") // remove extra spacing
-        .split(" ")
-        .forEach(v => {
-          if (v.startsWith("#")) tags.push(v.slice(1));
-          else text.push(v);
-        });
+      if (value.length > 0) {
+        value
+          .trim()
+          .replace(/\s+/g, " ") // remove extra spacing
+          .split(" ")
+          .forEach(v => {
+            if (v.startsWith("#")) tags.push(v.slice(1));
+            else text.push(v);
+          });
+      }
       props.onChange({
         text: text.join(" "),
         tags: tags,
@@ -66,7 +67,7 @@ const Search = withRouter(props => {
 
   const inputChange = e => setSearchValue(e.target.value);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const query_params = queryString.parse(props.location.search);
     var search_value = "";
     // search: value
@@ -79,8 +80,13 @@ const Search = withRouter(props => {
           .map(t => "#" + t)
           .join(" ") + " ";
 
-    setDefaultSearchValue(search_value);
-  }, [props.location.search]);
+    if (el_input.current) {
+      el_input.current.value = search_value;
+      resetTagSuggestions();
+      setSearchValue(search_value);
+      el_input.current.focus();
+    }
+  }, [props.location.search, el_input.current]);
 
   useEffect(() => {
     if (searchValue.length > 0) setSearchActive(true);
@@ -90,8 +96,9 @@ const Search = withRouter(props => {
   useEffect(() => {
     triggerOnChange();
     if (searchActive) resetTagSuggestions();
-    else if (el_input.current) {
-      el_input.current.value = "";
+    else {
+      if (el_input.current) el_input.current.value = "";
+
       setSearchValue("");
     }
   }, [searchActive]);
@@ -119,9 +126,8 @@ const Search = withRouter(props => {
           key="input"
           ref={el_input}
           type="text"
-          placeholder="Search"
+          placeholder="Search by title or #tag"
           className="input"
-          defaultValue={defaultSearchValue}
           onChange={inputChange}
         />
         <Button
@@ -130,6 +136,7 @@ const Search = withRouter(props => {
           icon="close"
           {...(props.cancelbutton || {})}
           onClick={e => {
+            if (el_input.current.value.length > 0) props.history.push({});
             setSearchActive(false);
           }}
         />
@@ -148,7 +155,7 @@ const Search = withRouter(props => {
 
         {tagSuggestions && (
           <TagList
-            data_list={tagSuggestions}
+            data={tagSuggestions}
             onClick={tdata => {
               var matched = false;
               for (var re of re_search) {
@@ -166,7 +173,7 @@ const Search = withRouter(props => {
                   el_input.current.value = `${searchValue} #${tdata.value} `;
               }
               resetTagSuggestions();
-              setSearchValue(el_input.current.value);
+              if (el_input.current) setSearchValue(el_input.current.value);
               if (el_input.current) el_input.current.focus();
             }}
           />

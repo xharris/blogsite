@@ -72,6 +72,22 @@ export const bytesToSize = bytes => {
   return Math.round(bytes / Math.pow(1024, i), 2) + " " + sizes[i];
 };
 
+export const throttle = (fn, ms) => {
+  var wait = false;
+  var timeout;
+  return function() {
+    if (!wait) {
+      fn.call();
+      wait = true;
+    }
+    if (!timeout)
+      timeout = setTimeout(function() {
+        wait = false;
+        timeout = null;
+      }, ms);
+  };
+};
+
 export const useWindowSize = () => {
   const isClient = typeof window === "object";
 
@@ -92,9 +108,53 @@ export const useWindowSize = () => {
       setWindowSize(getSize());
     }
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", throttle(handleResize, 500));
     return () => window.removeEventListener("resize", handleResize);
   }, [getSize, isClient]); // Empty array ensures that effect is only run on mount and unmount
 
   return windowSize;
 };
+/*
+const getHeight = () =>
+  window.innerHeight ||
+  document.documentElement.clientHeight ||
+  document.body.clientHeight;
+
+const getWidth = () =>
+  window.innerWidth ||
+  document.documentElement.clientWidth ||
+  document.body.clientWidth;
+
+export const useWindowSize = () => {
+  // save current window width in the state object
+  let [width, setWidth] = useState(getWidth());
+  let [height, setHeight] = useState(getHeight());
+
+  // in this case useEffect will execute only once because
+  // it does not have any dependencies.
+  useEffect(() => {
+    // timeoutId for debounce mechanism
+    let timeoutId = null;
+    const resizeListener = () => {
+      // prevent execution of previous setTimeout
+      clearTimeout(timeoutId);
+      // change width from the state object after 150 milliseconds
+      timeoutId = setTimeout(() => {
+        setWidth(getWidth());
+        setHeight(getHeight());
+        console.log(width, height);
+      }, 150);
+    };
+    // set resize listener
+    window.addEventListener("resize", resizeListener);
+
+    // clean up function
+    return () => {
+      // remove resize listener
+      window.removeEventListener("resize", resizeListener);
+    };
+  }, []);
+
+  return { width, height };
+};
+*/

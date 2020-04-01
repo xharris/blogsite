@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "purecss";
 import "@style/index.scss";
@@ -59,7 +59,16 @@ const App = () => {
         <Switch>
           <Route exact path={paths.browse_followed_blogs()} component={Home} />
           <Route exact path={paths.browse_blogs()} component={Explore} />
-          <Route exact path={paths.view_blog(":id")} component={BlogView} />
+          <Route
+            exact
+            path={paths.view_blog(":blog_id")}
+            component={BlogView}
+          />
+          <Route
+            exact
+            path={paths.view_post(":blog_id", ":post_id")}
+            component={BlogView}
+          />
         </Switch>
 
         <SignInModal
