@@ -13,6 +13,7 @@ const schema = new Schema({
   size: {
     content_container_width: { type: String, default: "initial" }
   },
+  bg_effect: { type: String },
   css: { type: String },
   name: { type: String },
 

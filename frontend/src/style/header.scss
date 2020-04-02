@@ -101,6 +101,12 @@
   padding-right: 10px;
   padding: 2px;
 
+  &.viewing-post {
+    @include not-phone {
+      background: transparent;
+    }
+  }
+
   @include phone {
     padding: 4px;
     right: 0px;
@@ -133,7 +139,7 @@
     font-weight: 600;
     font-family: "Baloo Thambi 2", cursive !important;
     font-size: 20px;
-    line-height: 22px;
+    line-height: 14px;
 
     transition: all ease-in-out 0.1s;
   }

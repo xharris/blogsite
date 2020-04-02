@@ -110,7 +110,7 @@ const pages = (size, color) => (
   </div>
 );
 
-export const BlogHeader = ({ data }) => {
+export const BlogHeader = withRouter(({ data, match }) => {
   const [logo, setLogo] = useState(img_logo);
 
   useEffect(() => {
@@ -120,7 +120,10 @@ export const BlogHeader = ({ data }) => {
   }, [data]);
 
   return (
-    <S.BlogHeader className="f-blog-header" data={data}>
+    <S.BlogHeader
+      className={`f-blog-header ${match.params.post_id ? "viewing-post" : ""}`}
+      data={data}
+    >
       <Link to={data ? paths.view_blog(data._id) : ""}>
         <Thumbnail className="logo" src={logo} alt="" />
       </Link>
@@ -130,7 +133,7 @@ export const BlogHeader = ({ data }) => {
       </div>
     </S.BlogHeader>
   );
-};
+});
 
 const Header = withRouter(props => {
   const { user, showLoginModal } = useAuthContext();

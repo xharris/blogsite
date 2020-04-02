@@ -18,7 +18,8 @@ const S = {
   PostCard: styled.div`
     border-color: ${props =>
       transparentize(0.9, get_color(props, "primary", "#212121"))};
-    &:hover {
+    &:hover,
+    &.viewing {
       border-color: ${props =>
         transparentize(0.65, get_color(props, "primary", "#212121"))};
     }
@@ -40,7 +41,7 @@ const S = {
   TitleMedia: styled.div`
     .title {
       background-color: ${props =>
-        transparentize(0.3, get_color(props, "primary", "#212121"))};
+        transparentize(0.5, get_color(props, "primary", "#212121"))};
     }
   `
 };
@@ -48,15 +49,18 @@ const S = {
 const Card = withRouter(props => {
   const body_limit = 100;
   const [data, setData] = useState(null);
+  const [body, setBody] = useState();
   const [styleData, setStyleData] = useState(null);
   const [type, setType] = useState(); // media, title, title-media, body, title-body
 
   const checkData = new_data => {
-    if (new_data.body)
-      new_data.body =
+    if (new_data.body) {
+      setBody(
         new_data.body.length > body_limit
           ? new_data.body.slice(0, body_limit) + "..."
-          : new_data.body;
+          : new_data.body
+      );
+    }
     setData(new_data);
   };
 
@@ -92,12 +96,15 @@ const Card = withRouter(props => {
 
   return (
     data && (
-      <S.PostCard className={`f-post-card ${type}`} style={styleData}>
+      <S.PostCard
+        className={`f-post-card ${type} ${props.className || ""}`}
+        style={styleData}
+      >
         {type === "TitleBody" ? (
           <S.TitleBody className="card-title-body" style={styleData}>
             <Link to={paths.view_post(data.blog_id, data._id)}>
               <div className="title">{data.title}</div>
-              <div className="description">{data.body}</div>
+              <div className="description">{body}</div>
             </Link>
             <TagList data={data.tags} />
           </S.TitleBody>
@@ -118,7 +125,7 @@ const Card = withRouter(props => {
         ) : type === "Body" ? (
           <S.TitleBody className="card-body" style={styleData}>
             <Link to={paths.view_post(data.blog_id, data._id)}>
-              <div className="description">{data.body}</div>
+              <div className="description">{body}</div>
             </Link>
             <TagList data={data.tags} />
           </S.TitleBody>

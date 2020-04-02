@@ -1,5 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 
+export const re = {
+  youtube: /https?:\/\/www\.(?:youtube\.com\/watch\?v=(\w+))|(?:\.be\/(\w+))/
+};
+
 export const color = {
   red: "#e57373"
 };

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import { re } from "@util";
+
 import styled from "styled-components";
 import "@style/thumbnail.scss";
 
@@ -23,8 +25,6 @@ const Image = props => (
   </S.Image>
 );
 
-const re_youtube = /https?:\/\/www\.(?:youtube\.com\/watch\?v=(\w+))|(?:\.be\/(\w+))/;
-
 export const parseImageData = value => {
   if (Array.isArray(value)) return value.map(v => parseImageData(v));
   var ret = value
@@ -36,8 +36,8 @@ export const parseImageData = value => {
     : value;
   var type = "image";
   if (ret && typeof ret === "string") {
-    if (ret.match(re_youtube)) type = "video";
-    ret = ret.replace(re_youtube, "http://i3.ytimg.com/vi/$1/hqdefault.jpg");
+    if (ret.match(re.youtube)) type = "video";
+    ret = ret.replace(re.youtube, "http://i3.ytimg.com/vi/$1/hqdefault.jpg");
   }
   return [type, ret];
 };

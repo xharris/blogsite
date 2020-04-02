@@ -12,8 +12,6 @@ const paths = {
   // POST
   view_post: (blog_id, post_id, action) =>
     `/blog/${blog_id}/post/${post_id}${action ? `/${action}` : ""}`,
-  edit_post: post_id => `/post/${post_id}/edit`,
-  new_post: blog_id => `/blog/${blog_id}/newpost`,
   // PROFILE
   view_profile: user_id => `/profile${user_id ? `/${user_id}` : ""}`
 };
