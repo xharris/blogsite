@@ -43,10 +43,10 @@ const S = {
       background-color: ${props =>
         transparentize(0.5, get_color(props, "primary", "#212121"))};
     }
-  `
+  `,
 };
 
-const Card = withRouter(props => {
+const Card = withRouter(({ id, data: in_data, styledata, className }) => {
   const body_limit = 100;
   const [data, setData] = useState(null);
   const [body, setBody] = useState();
@@ -65,21 +65,21 @@ const Card = withRouter(props => {
   };
 
   useEffect(() => {
-    if (props.data) {
-      checkData(props.data);
+    if (in_data) {
+      checkData(in_data);
     } else {
       (async () => {
-        await Post.get(props.id).then(e => {
+        await Post.get(id).then(e => {
           checkData(e.data.data);
         });
       })();
     }
-    if (props.styledata) {
-      setStyleData(props.styledata);
+    if (styledata) {
+      setStyleData(styledata);
     } else {
       // Style.get_by_post_id
     }
-  }, [props.data, props.id, props.styledata]);
+  }, [data, id, styledata]);
 
   useEffect(() => {
     if (data) {
@@ -97,7 +97,7 @@ const Card = withRouter(props => {
   return (
     data && (
       <S.PostCard
-        className={`f-post-card ${type} ${props.className || ""}`}
+        className={`f-post-card ${type} ${className || ""}`}
         style={styleData}
       >
         {type === "TitleBody" ? (

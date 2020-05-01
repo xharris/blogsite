@@ -28,6 +28,8 @@ const S = {
     .title,
     .body,
     .date,
+    .input,
+    input,
     .body * {
       color: ${props =>
         darken(0.5, get_color(props, "primary", "#FFF"))} !important;
@@ -44,7 +46,7 @@ const S = {
           lighten(
             0.15,
             transparentize(0.4, get_color(props, "primary", "#212121"))
-          )}; 
+          )};
       }
     }
   `
@@ -85,15 +87,28 @@ const Content = withRouter(props => {
             }
           }}
         />
+        <div className="title">
+          {data._id ? "Edit a post" : "Add a new post"}
+        </div>
         <Form
           onSubmit={e => {
             var new_data = Object.assign(data, e);
             if (
               (new_data.title && new_data.title.length > 0) ||
               (new_data.body && new_data.body.length > 0)
-            )
-              props.onEdit(new_data);
-            else window.alert("Your post must have a title or body!");
+            ) {
+              if (new_data.tags) {
+                new_data.tags = new_data.tags.split(",").map(t =>
+                  t
+                    .trim()
+                    .replace("#", "")
+                    .replace(/\s/, "-")
+                );
+              }
+              if (data._id) new_data._id = data._id;
+              console.log(new_data);
+              if (props.onEdit) props.onEdit(new_data);
+            } else window.alert("Your post must have a title or body!");
           }}
         >
           <Input name="title" placeholder="Title" defaultValue={data.title} />
@@ -105,6 +120,7 @@ const Content = withRouter(props => {
               setData({ ...data, body: e });
             }}
           />
+
           <Input
             name="tags"
             placeholder="Tags (comma-separated) Ex. anime, art, photography"

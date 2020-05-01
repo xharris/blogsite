@@ -14,11 +14,10 @@ const default_tag_color = "#546E7A";
 const S = {
   Tag: styled(FakeLink)`
     &.light {
-      color: ${props => props.color || default_tag_color} !important;
+      color: ${props => props.color || default_tag_color};
     }
     &.dark {
-      color: ${props =>
-        lighten(0.4, props.color || default_tag_color)} !important;
+      color: ${props => lighten(0.4, props.color || default_tag_color)};
     }
   `
 };

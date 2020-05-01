@@ -3,7 +3,7 @@ import React, {
   useState,
   useRef,
   useCallback,
-  useLayoutEffect
+  useLayoutEffect,
 } from "react";
 import { withRouter } from "react-router-dom";
 import ReactResizeDetector from "react-resize-detector";
@@ -22,9 +22,18 @@ import { Card as PostCard, Content as PostContent } from "@feature/post";
 import Button from "@feature/button";
 
 import styled from "styled-components";
-import { darken, transparentize } from "polished";
+import { lighten, darken, transparentize } from "polished";
 import { mixins, scrollbar } from "@style";
 import "./index.scss";
+
+const defaults = {
+  primary: "#FFF",
+  secondary: "#757575",
+  tag_primary: "#FFF",
+  tag_secondary: "#000",
+  btn_primary: "#212121",
+  btn_secondary: "#757575",
+};
 
 export const get_color = (props, key, _default) =>
   props.style ? props.style.color[key] : _default;
@@ -34,31 +43,72 @@ export const get_attr = (props, key, _default) =>
 
 const S = {
   Body: styled(Body)`
-    @import "@style/minixs";
+    * {
+      ${props => scrollbar(get_color(props, "secondary", defaults.secondary))}
+    }
 
-    .post-list {
-      ${props => scrollbar(get_color(props, "secondary", "#757575"))}
+    .f-button {
+      color: ${props => get_color(props, "secondary", defaults.btn_secondary)};
+      border-color: ${props =>
+        get_color(props, "secondary", defaults.btn_secondary)};
 
+      &:hover {
+        color: #f5f5f5;
+        background: ${props =>
+          get_color(props, "secondary", defaults.btn_secondary)};
+      }
+    }
+
+    .tag-suggestions .f-tag-list {
+      background-color: ${props =>
+        transparentize(0.2, get_color(props, "primary", defaults.tag_primary))};
+    }
+
+    .tag-suggestions .f-tag {
+      color: ${props =>
+        darken(0.2, get_color(props, "secondary", defaults.tag_secondary))};
+    }
+
+    .blog-description {
+      ${mixins.phone} {
+        background: ${props =>
+          transparentize(
+            0.25,
+            lighten(0.1, get_color(props, "primary", defaults.tag_primary))
+          )};
+      }
+    }
+
+    .color-overlay {
       background: linear-gradient(
         to right,
         transparent,
-        ${props => transparentize(0.2, get_color(props, "primary", "#FFF"))} 30%
+        ${props =>
+            transparentize(0.2, get_color(props, "primary", defaults.primary))}
+          30%
       );
 
       .posts {
         border-top: 1px solid
           ${props =>
-            transparentize(0.5, get_color(props, "secondary", "#000"))};
+            transparentize(
+              0.5,
+              get_color(props, "secondary", defaults.tag_secondary)
+            )};
         border-bottom: 1px solid
           ${props =>
-            transparentize(0.5, get_color(props, "secondary", "#000"))};
+            transparentize(
+              0.5,
+              get_color(props, "secondary", defaults.tag_secondary)
+            )};
       }
 
       .btn-search,
       .actions .f-button {
         border-color: ${props =>
-          darken(0.2, get_color(props, "secondary", "#000"))};
-        color: ${props => darken(0.2, get_color(props, "secondary", "#000"))};
+          darken(0.2, get_color(props, "secondary", defaults.tag_secondary))};
+        color: ${props =>
+          darken(0.2, get_color(props, "secondary", defaults.tag_secondary))};
 
         &:hover {
           color: #f5f5f5;
@@ -67,19 +117,25 @@ const S = {
 
       ${mixins.phone} {
         background: ${props =>
-          transparentize(0.2, get_color(props, "primary", "#FFF"))};
+          transparentize(
+            0.25,
+            lighten(0.1, get_color(props, "primary", defaults.tag_primary))
+          )};
       }
     }
 
     &.viewing-post .post-list {
       background: ${props =>
-        transparentize(0.2, get_color(props, "primary", "#FFF"))}
+          transparentize(
+            0.2,
+            get_color(props, "primary", defaults.tag_primary)
+          )}
         30%;
     }
 
     .f-search input {
       background-color: ${props =>
-        darken(0.5, get_color(props, "primary", "#fff"))};
+        darken(0.5, get_color(props, "primary", defaults.tag_primary))};
     }
 
     .bg .image,
@@ -93,7 +149,7 @@ const S = {
     }
 
     ${props => (props.css ? props.css : "")}
-  `
+  `,
 };
 
 export const BlogView = withRouter(props => {
@@ -101,7 +157,7 @@ export const BlogView = withRouter(props => {
   const [postList, setPostList] = useState(null);
   const [filteredList, setFilteredList] = useState(null);
   const [searchValue, setSearchValue] = useState(null);
-  const [postsDivWidth, setPostsDivWidth] = useState(0);
+  const [postsDivWidth, setPostsDivWidth] = useState("initial");
   const [filterDims, setFilterDims] = useState();
 
   const [editingData, setEditingData] = useState(false);
@@ -137,14 +193,29 @@ export const BlogView = withRouter(props => {
     }
   };
 
-  const new_post = async () => {
+  // navigate to new post page
+  const new_post = () => {
     props.history.push({
-      pathname: paths.view_blog(data._id, "newpost")
+      pathname: paths.view_blog(data._id, "newpost"),
     });
   };
 
-  const save_post = async e => {
-    console.log(e);
+  const save_post = e => {
+    if (!e._id) {
+      // save new post
+      Post.add(data._id, e)
+        .then(e => {
+          console.log(data._id, e);
+          // props.history.push({
+          //   pathname: paths.view_post(data._id, e._id)
+          // });
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    } else {
+      // save edited post
+    }
   };
 
   const filter = useCallback(() => {
@@ -172,20 +243,22 @@ export const BlogView = withRouter(props => {
     const blog_action = props.match.params.action;
     if (blog_id) {
       const fetch_data = async () => {
-        await Blog.get(blog_id).then(async e => {
-          setData(e.data.data);
-          const content_width = e.data.data.style.size.content_container_width;
-          if (content_width === "initial") {
-            setPostsDivWidth(320);
-          }
-          if (content_width.includes("px")) {
-            setPostsDivWidth(parseInt(content_width));
-          }
-          // creating a new post
-          if (blog_action === "newpost") {
-            setEditingData({ blog_id });
-          }
-        });
+        await Blog.get(blog_id)
+          .then(async e => {
+            setData(e.data.data);
+            const content_width =
+              e.data.data.style.size.content_container_width;
+            if (content_width.includes("px")) {
+              setPostsDivWidth(parseInt(content_width));
+            }
+            // creating a new post
+            if (blog_action === "newpost") {
+              setEditingData({ blog_id });
+            }
+          })
+          .catch(e => {
+            console.log("what", blog_id);
+          });
         await Post.get_by_blog_id(blog_id).then(e => {
           setPostList(e);
           setFilteredList(e);
@@ -237,7 +310,6 @@ export const BlogView = withRouter(props => {
 
   return (
     <>
-      <BlogHeader data={data} />
       <S.Body
         noHeader={true}
         className={`p-blogview ${
@@ -247,43 +319,16 @@ export const BlogView = withRouter(props => {
         bg={data ? data.bg : null}
       >
         {data && [
-          <Thumbnail key="bg" className="bg" src={data.bg.binary_value} />,
-          <ReactResizeDetector
-            key="blur-bg"
-            handleWidth
-            handleHeight
-            onResize={onResize}
-            refreshMode={"throttle"}
-            refreshRate={500}
-            targetDomEl={postsDiv}
-          >
-            {({ width, height }) => {
-              const div_left = postsDiv.current
-                ? postsDiv.current.offsetLeft
-                : 0;
-              const div_width = postsDiv.current
-                ? postsDiv.current.offsetWidth
-                : width;
-              return (
-                <div
-                  className="blur-bg"
-                  style={{
-                    clip: `rect(0px, ${div_left +
-                      div_width}px, ${height}px, ${div_left}px)`
-                  }}
-                >
-                  <Thumbnail src={data.bg.binary_value} />
-                </div>
-              );
-            }}
-          </ReactResizeDetector>,
-
-          <div
-            key="extra-space"
-            className="extra-space"
-            style={{ paddingRight: postsDivWidth }}
-          >
-            {(editingData || viewPost) && (
+          data.bg && (
+            <Thumbnail key="bg" className="bg" src={data.bg.binary_value} />
+          ),
+          <div key="color-overlay" className="color-overlay"></div>,
+          <div key="post-list" className="post-list" ref={postsDiv}>
+            <div key="header" className="blog-header-container">
+              <BlogHeader data={data} />
+              <div className="blog-description">{data.description}</div>
+            </div>
+            {editingData || viewPost ? (
               <PostContent
                 data={viewPost || editingData}
                 styledata={data.style}
@@ -292,42 +337,38 @@ export const BlogView = withRouter(props => {
                   setEditingData(null);
                 }}
               />
+            ) : (
+              [
+                <Search
+                  disabled={editingData != null}
+                  onChange={e => setSearchValue(e)}
+                  searchbutton={{
+                    color: get_color(data, "secondary", defaults.btn_secondary),
+                  }}
+                  cancelbutton={{
+                    color: get_color(data, "primary", defaults.btn_primary),
+                  }}
+                />,
+                <div className="posts">
+                  {filteredList &&
+                    filteredList.map(t => (
+                      <PostCard
+                        key={t._id}
+                        data={t}
+                        className={
+                          viewPost && viewPost._id === t._id ? "viewing" : ""
+                        }
+                        styledata={data.style}
+                      />
+                    ))}
+                </div>,
+              ]
             )}
-          </div>,
-          <div
-            key="post-list"
-            className="post-list"
-            ref={postsDiv}
-            style={{
-              maxWidth: postsDivWidth
-            }}
-          >
-            <div className="blog-description">{data.description}</div>
-            <Search
-              onChange={e => setSearchValue(e)}
-              searchbutton={{
-                color: get_color(data, "secondary", "#757575")
-              }}
-              cancelbutton={{ color: get_color(data, "primary", "#212121") }}
-            />
-            <div className="posts">
-              {filteredList &&
-                filteredList.map(t => (
-                  <PostCard
-                    key={t._id}
-                    data={t}
-                    className={
-                      viewPost && viewPost._id === t._id ? "viewing" : ""
-                    }
-                    styledata={data.style}
-                  />
-                ))}
-            </div>
             <div className="actions">
               {/* Blog Actions: Follow */}
               {isOwner === false && (
                 <Button
-                  color={get_color(data, "secondary", "#757575")}
+                  color={get_color(data, "secondary", defaults.btn_secondary)}
                   icon={isFollowing ? "remove" : "add"}
                   onClick={isFollowing ? unfollow_blog : follow_blog}
                 >
@@ -337,7 +378,7 @@ export const BlogView = withRouter(props => {
 
               {/* Blog Actions: Share */}
               <Button
-                color={get_color(data, "secondary", "#757575")}
+                color={get_color(data, "secondary", defaults.btn_secondary)}
                 icon="share"
               >
                 share
@@ -345,7 +386,7 @@ export const BlogView = withRouter(props => {
 
               {/* Blog Actions: RSS */}
               <Button
-                color={get_color(data, "secondary", "#757575")}
+                color={get_color(data, "secondary", defaults.btn_secondary)}
                 icon="rss_feed"
               >
                 RSS
@@ -354,7 +395,7 @@ export const BlogView = withRouter(props => {
               {/* Blog Actions: Add Post */}
               {isOwner === true && (
                 <Button
-                  color={get_color(data, "secondary", "#757575")}
+                  color={get_color(data, "secondary", defaults.btn_secondary)}
                   onClick={new_post}
                   icon="note_add"
                 >
@@ -362,7 +403,7 @@ export const BlogView = withRouter(props => {
                 </Button>
               )}
             </div>
-          </div>
+          </div>,
         ]}
       </S.Body>
     </>

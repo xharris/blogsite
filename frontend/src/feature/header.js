@@ -43,7 +43,7 @@ const S = {
           lighten(0.1, get_color(props.data || {}, "primary", "#FFF"))
         )};
     }
-  `
+  `,
 };
 
 const HeaderPage = props => (
@@ -71,18 +71,18 @@ const HeaderPage = props => (
 );
 
 HeaderPage.defaultProps = {
-  size: "normal"
+  size: "normal",
 };
 
 const Separator = () => <div className="separator" />;
 
 const header_colors = ["#3F51B5", "#0D47A1", "#0277BD"];
 
-const pages = (size, color) => (
+const pages = (user, size, color) => (
   <div className={`pages-container ${size || "normal"}`}>
     <HeaderPage
       text="Home"
-      subtext="view blogs you follow"
+      subtext={user ? "view blogs you follow" : null}
       nonav={"true"}
       color={color ? darken(0.2, color) : header_colors[1]}
       to={paths.browse_followed_blogs()}
@@ -98,19 +98,23 @@ const pages = (size, color) => (
       to={paths.browse_blogs()}
       size={size}
     />
-    <Separator />
-    <HeaderPage
-      text="Profile"
-      subtext="view and edit"
-      color={color ? lighten(0.1, color) : header_colors[0]}
-      image={img_world}
-      to={paths.view_profile()}
-      size={size}
-    />
+    {user && [
+      <Separator key="sep" />,
+      <HeaderPage
+        key="hpage"
+        text="Profile"
+        subtext="view and edit"
+        color={color ? lighten(0.1, color) : header_colors[0]}
+        image={img_world}
+        to={paths.view_profile()}
+        size={size}
+      />,
+    ]}
   </div>
 );
 
 export const BlogHeader = withRouter(({ data, match }) => {
+  const { user, showLoginModal, logout } = useAuthContext();
   const [logo, setLogo] = useState(img_logo);
 
   useEffect(() => {
@@ -129,14 +133,18 @@ export const BlogHeader = withRouter(({ data, match }) => {
       </Link>
       <div className="content">
         {data && data.title && <div className="title">{data.title}</div>}
-        {pages("small", data ? get_color(data, "secondary", "#757575") : null)}
+        {pages(
+          user,
+          "small",
+          data ? get_color(data, "secondary", "#757575") : null
+        )}
       </div>
     </S.BlogHeader>
   );
 });
 
 const Header = withRouter(props => {
-  const { user, showLoginModal } = useAuthContext();
+  const { user, showLoginModal, logout } = useAuthContext();
 
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
 
@@ -145,7 +153,7 @@ const Header = withRouter(props => {
       <Link to={"/"} className="logo-link">
         <img className="logo" src={img_logo} alt="" />
       </Link>
-      {!props.nolinks && pages()}
+      {/* middle page tabs */ !props.nolinks && pages(user)}
       {!props.noavatar && (
         <div className="right">
           {user ? (
@@ -159,6 +167,7 @@ const Header = withRouter(props => {
                       text={m}
                       onClick={() => {
                         setAvatarMenuOpen(false);
+                        if (m === "logout") logout();
                       }}
                     />
                   ))}

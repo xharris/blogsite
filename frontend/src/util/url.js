@@ -1,10 +1,4 @@
 const paths = {
-  // TUTORIALS
-  browse_tutorials: () => "/tutorials",
-  view_tutorial: (id, action) =>
-    `/tutorials/${id}${action ? `/${action}` : ""}`,
-  // SOFTWARE
-  browse_software: () => "/software",
   // BLOG
   browse_blogs: () => "/explore",
   view_blog: (id, action) => `/blog/${id}${action ? `/${action}` : ""}`,
@@ -13,7 +7,9 @@ const paths = {
   view_post: (blog_id, post_id, action) =>
     `/blog/${blog_id}/post/${post_id}${action ? `/${action}` : ""}`,
   // PROFILE
-  view_profile: user_id => `/profile${user_id ? `/${user_id}` : ""}`
+  view_profile: user_id => `/profile${user_id ? `/${user_id}` : ""}`,
+  // MEDIA
+  view_media: media_id => `/media/${media_id}/view`
 };
 
 export default paths;

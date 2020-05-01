@@ -10,6 +10,7 @@ import paths from "@util/url";
 import Home from "@page/home";
 import Explore from "@page/explore";
 import { BlogView } from "@page/blog";
+import MediaView from "@page/mediaview";
 
 import { SignInModal } from "@feature/signin";
 
@@ -22,8 +23,8 @@ const login = e => {
 };
 
 const logout = () => {
-  //Cookies.remove("user");
-  //window.location.reload();
+  Cookies.remove("user");
+  window.location.reload();
 };
 
 const App = () => {
@@ -72,6 +73,7 @@ const App = () => {
             component={BlogView}
           />
           <Route path={paths.view_blog(":blog_id")} component={BlogView} />
+          <Route path={paths.view_media(":media_id")} component={MediaView} />
         </Switch>
 
         <SignInModal

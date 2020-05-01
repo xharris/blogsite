@@ -104,19 +104,25 @@ const Search = withRouter(props => {
   }, [searchActive]);
 
   useEffect(() => {
+    let mounted = true;
     if (!tagList)
       (async () => {
         await dbTag
           .get()
           .then(e => {
-            setTagList(e.data.data);
-            setTagSuggestions(e.data.data);
+            if (mounted) {
+              setTagList(e.data.data);
+              setTagSuggestions(e.data.data);
+            }
           })
           .catch(e => {
-            setTagList([]);
-            setTagSuggestions([]);
+            if (mounted) {
+              setTagList([]);
+              setTagSuggestions([]);
+            }
           });
       })();
+    return () => (mounted = false);
   }, []);
 
   return (

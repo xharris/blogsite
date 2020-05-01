@@ -110,7 +110,12 @@ const login = async (req, res) => {
 const checkAuth = async (req, res) => {
   return new Promise(async (_res, _rej) => {
     try {
-      _res(jwt.verify(req.body.token || "", process.env.JWT_KEY));
+      const valid = jwt.verify(req.body.token || "", process.env.JWT_KEY);
+      if (valid) _res(valid);
+      else
+        return status(401, res, {
+          message: `Authentication failed: token invalid`
+        });
     } catch (e) {
       return status(401, res, {
         message: `Authentication failed: token invalid`
@@ -119,6 +124,10 @@ const checkAuth = async (req, res) => {
   }).then(async user_info => {
     return await model
       .findOne({ username: user_info.data.user }, async (err, instance) => {
+        if (!instance)
+          return status(401, res, {
+            message: `Authentication failed: token invalid`
+          });
         const valid = await verify_password(
           user_info.data.password,
           instance.password

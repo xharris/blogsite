@@ -13,7 +13,7 @@ const schema = new Schema({
   date_modified: { type: Date, required: true }
 });
 
-const model = mongoose.model("tag", schema);
+export const model = mongoose.model("tag", schema);
 
 const controller = build_ctrl({
   name: "Tag",

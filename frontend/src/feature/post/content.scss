@@ -2,32 +2,25 @@
 
 .f-post-content,
 .f-post-editor {
-  position: relative;
-  height: 100%;
-  padding-top: 56px;
   box-sizing: border-box;
-
-  @include phone {
-    position: absolute;
-    width: 100%;
-    z-index: 200;
-  }
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: auto;
 
   .btn-close {
-    margin: 8px auto;
+    margin: 8px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 50;
   }
 
   .container,
   .f-form {
-    position: absolute;
-    top: 100px;
-    left: 0px;
-    bottom: 0px;
-    right: 0px;
-    width: 100%;
+    padding-top: 34px;
     box-sizing: border-box;
-    height: calc(100% - 100px);
-    overflow-y: auto;
+    overflow: auto;
 
     > *:last-child {
       margin-bottom: 25%;
@@ -88,18 +81,29 @@
 }
 
 .f-post-editor {
+  flex: 0 1 100%;
+
   .f-form {
     max-width: 500px;
-    margin: auto;
+    margin: 0px auto;
+    width: 100%;
 
     > * {
       padding: 0px;
       margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 15%;
+      }
     }
 
     .f-body-edit {
       width: 100%;
-      height: 300px;
+
+      &,
+      textarea {
+        min-height: 250px;
+      }
 
       .body {
         font-family: "Baloo Thambi 2", cursive !important;

@@ -38,6 +38,7 @@ const db_local = {
 
 const helmet = require("helmet"); // creates headers to protect from attacks
 const morgan = require("morgan"); // logs requests. ok??
+const csp = require("helmet-csp");
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(
@@ -52,6 +53,14 @@ app.use(
   })
 );
 app.use(morgan("combined")); // tiny/combined
+app.use(
+  csp({
+    directives: {
+      defaultSrc: [`'self'`],
+      imgSrc: [`'self'`]
+    }
+  })
+);
 
 const mongoose = require("mongoose");
 mongoose
@@ -63,6 +72,7 @@ mongoose
     console.error("Connection error", e.message);
   });
 mongoose.set("useCreateIndex", true);
+mongoose.pluralize(null);
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));

@@ -182,7 +182,6 @@ const Form = props => {
         if (props.onSubmit) {
           e.preventDefault();
           var outputs = Object.assign(inputs, {});
-          console.log(inputs);
           if (props.inputs)
             props.inputs.forEach(i => {
               if (i.value) outputs[i.name] = i.value;

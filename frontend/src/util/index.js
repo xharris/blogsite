@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react";
 
 export const re = {
+  mimetype: /[^:\s*]\w+\/[\w-+\d.]+(?=[;| ])/,
+  media_url_id: /\/media\/(\w+)/,
   youtube: /https?:\/\/www\.(?:youtube\.com\/watch\?v=(\w+))|(?:\.be\/(\w+))/
 };
 

@@ -11,7 +11,11 @@ const schema = new Schema({
   likes: { type: Number, default: 0 },
   bg: { type: mongoose.Schema.Types.ObjectId, ref: "media" },
   thumbnail: { type: mongoose.Schema.Types.ObjectId, ref: "media" },
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: "user_info" }, // owner
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user_info",
+    required: true
+  }, // owner
   deleted: { type: Boolean, default: false },
   style: { type: mongoose.Schema.Types.ObjectId, ref: "style" },
 
@@ -22,7 +26,6 @@ const schema = new Schema({
 const model = mongoose.model("blog", schema);
 
 const controller = build_ctrl({
-  _id: { type: String, default: shortid.generate },
   name: "Blog",
   model: model,
   ctrls: ["add", "update", "get_by_id", "get_all"],

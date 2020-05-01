@@ -89,90 +89,6 @@
   } // .menu
 } // .f-header
 
-.f-blog-header {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  margin: 5px;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  border-radius: 40px;
-  padding-right: 10px;
-  padding: 2px;
-
-  &.viewing-post {
-    @include not-phone {
-      background: transparent;
-    }
-  }
-
-  @include phone {
-    padding: 4px;
-    right: 0px;
-    margin: 0px;
-    border-radius: 0px;
-    display: flex;
-    justify-content: center;
-    overflow: hidden;
-    height: 48px;
-  }
-
-  .f-thumbnail {
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
-    background-color: transparent;
-
-    @include phone {
-      width: 70px;
-      height: 70px;
-      margin-right: 10px;
-    }
-  }
-
-  .content {
-    margin: 0px 10px;
-  }
-
-  .title {
-    font-weight: 600;
-    font-family: "Baloo Thambi 2", cursive !important;
-    font-size: 20px;
-    line-height: 14px;
-
-    transition: all ease-in-out 0.1s;
-  }
-
-  @include desktop {
-    &:hover .title {
-      padding: 0px;
-      font-size: 16px !important;
-    }
-  }
-
-  .pages-container {
-    display: flex;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    transition: all ease-in-out 0.1s;
-    height: 20px;
-    align-items: center;
-
-    @include desktop {
-      max-height: 0px;
-      max-width: 0px;
-    }
-  }
-
-  @include desktop {
-    &:hover .pages-container {
-      max-height: 25px;
-      max-width: 200px;
-    }
-  }
-}
-
 .header-page {
   position: relative;
   justify-content: center;
@@ -252,10 +168,99 @@
   &.on-page img {
     filter: grayscale(0);
   }
+
+  .separator {
+    margin-right: 10px;
+  }
 } // .header-page
 
 .separator {
   height: 80%;
   border-left: 1px solid $separator-color;
-  margin-right: 10px;
+}
+
+.f-blog-header {
+  margin: 5px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  border-radius: 40px;
+  padding-right: 10px;
+  padding: 2px;
+
+  &.viewing-post {
+    @include not-phone {
+      background: transparent;
+    }
+  }
+
+  @include phone {
+    margin: 0px;
+    padding: 4px;
+    right: 0px;
+    border-radius: 0px;
+    display: flex;
+    justify-content: center;
+    height: 48px;
+  }
+
+  .header-page {
+    @include phone {
+      margin: 0px 2px;
+    }
+  }
+
+  .f-thumbnail {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-color: transparent;
+
+    @include phone {
+      width: 70px;
+      height: 70px;
+      margin-right: 10px;
+    }
+  }
+
+  .content {
+    margin: 0px 10px;
+  }
+
+  .title {
+    font-weight: 600;
+    font-family: "Baloo Thambi 2", cursive !important;
+    font-size: 20px;
+    line-height: 14px;
+
+    transition: all ease-in-out 0.1s;
+  }
+
+  @include desktop {
+    &:hover .title {
+      padding: 0px;
+      font-size: 16px !important;
+    }
+  }
+
+  .pages-container {
+    display: flex;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    transition: all ease-in-out 0.1s;
+    height: 20px;
+    align-items: center;
+
+    @include desktop {
+      max-height: 0px;
+      max-width: 0px;
+    }
+  }
+
+  @include desktop {
+    &:hover .pages-container {
+      max-height: 25px;
+      max-width: 200px;
+    }
+  }
 }

@@ -12,14 +12,14 @@ const S = {
     color: ${props => darken(0.2, props.color)};
 
     &:hover {
-      background-color: ${props => darken(0.1, props.color)} !important;
-      border-color: ${props => darken(0.1, props.color)} !important;
+      background-color: ${props => darken(0.1, props.color)};
+      border-color: ${props => darken(0.1, props.color)};
       color: #f5f5f5;
     }
 
     &:active {
-      background-color: ${props => darken(0.2, props.color)} !important;
-      border-color: ${props => darken(0.2, props.color)} !important;
+      background-color: ${props => darken(0.2, props.color)};
+      border-color: ${props => darken(0.2, props.color)};
     }
   `
 };

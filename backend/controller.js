@@ -8,6 +8,10 @@ export const prep_new_instance = inst => {
   inst.date_modified = Date.now();
   return inst;
 };
+export const instance_modified = inst => {
+  inst.date_modified = Date.now();
+  return inst;
+};
 
 export const controllers = {
   add: (name, model, opt) => async (req, res) => {
@@ -33,7 +37,7 @@ export const controllers = {
           } else {
             return status(201, res, {
               id: instance._id,
-              message: `${name} created!`
+              message: `${name} created!`,
             });
           }
         })
@@ -49,7 +53,7 @@ export const controllers = {
             } else {
               return status(200, res, {
                 data: existing_inst,
-                message: `${name} already exists!`
+                message: `${name} already exists!`,
               });
             }
           } else {
@@ -82,20 +86,20 @@ export const controllers = {
           ? opt.body_mod(key, instance[key], body[key], req) || body[key]
           : body[key];
       }
-      instance.date_modified = Date.now();
+      instance_modified(instance);
       instance
         .save()
         .then(() => {
           return status(200, res, {
             id: instance._id,
-            message: `${name} updated!`
+            message: `${name} updated!`,
           });
         })
         .catch(err => {
           if (err.code === 11000) {
             return status(201, res, {
               id: instance._id,
-              message: `${name} already exists!`
+              message: `${name} already exists!`,
             });
           } else {
             return status(400, res, { err, message: `${name} not updated!` });
@@ -151,7 +155,7 @@ export const controllers = {
       })
       .populate(opt.populate)
       .catch(err => console.error(err));
-  }
+  },
 };
 
 export const use_ctrl = (key, name, model, ctrl_opt) =>
