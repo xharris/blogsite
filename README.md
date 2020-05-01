@@ -1,11 +1,11 @@
-# tutsite
+# blogsite
 
 ## Setup
 
-* `git clone https://github.com/xharris/tutsite.git`
-* `cd tutsite`
-* `npm install`
-* `npm run dev`
+- `git clone https://github.com/xharris/blogsite.git`
+- `cd blogsite`
+- `npm install`
+- `npm run dev`
 
 should open localhost:3001 in browser tab.
 
