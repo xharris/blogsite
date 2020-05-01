@@ -38,6 +38,7 @@ const db_local = {
 
 const helmet = require("helmet"); // creates headers to protect from attacks
 const morgan = require("morgan"); // logs requests. ok??
+const csp = require("helmet-csp");
 app.use(helmet());
 app.use(cors(corsOptions));
 app.use(
@@ -52,10 +53,18 @@ app.use(
   })
 );
 app.use(morgan("combined")); // tiny/combined
+app.use(
+  csp({
+    directives: {
+      defaultSrc: [`'self'`],
+      imgSrc: [`'self'`]
+    }
+  })
+);
 
 const mongoose = require("mongoose");
 mongoose
-  .connect("mongodb://127.0.0.1:27017/tutsite", {
+  .connect("mongodb://127.0.0.1:27017/blogsite", {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -63,21 +72,27 @@ mongoose
     console.error("Connection error", e.message);
   });
 mongoose.set("useCreateIndex", true);
-
+mongoose.pluralize(null);
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
-const TutorialRouter = require("./api/tutorial").router;
-const TagRouter = require("./api/tag").router;
-const MediaRouter = require("./api/media").router;
-const TutorialPartRouter = require("./api/tutorial_part").router;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 app.get("/", (req, res) => {
   res.send("Hello Warudo!");
 });
-app.use("/api", TutorialRouter);
-app.use("/api", TagRouter);
-app.use("/api", MediaRouter);
-app.use("/api", TutorialPartRouter);
+
+const routers = [
+  "blog",
+  "tag",
+  "media",
+  "post",
+  "style",
+  "user",
+  "follow",
+  "user_info"
+];
+routers.forEach(r => {
+  app.use("/api", require(`./api/${r}`).router);
+});
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

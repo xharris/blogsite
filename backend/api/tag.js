@@ -13,7 +13,7 @@ const schema = new Schema({
   date_modified: { type: Date, required: true }
 });
 
-const model = mongoose.model("tag", schema);
+export const model = mongoose.model("tag", schema);
 
 const controller = build_ctrl({
   name: "Tag",
@@ -21,10 +21,10 @@ const controller = build_ctrl({
   ctrls: ["add", "update", "delete", "get_by_id", "get_all"]
 });
 
-router.post("/tags/add", controller.add);
-router.put("/tags/:id/update", controller.update);
-router.delete("/tags/:id/delete", controller.delete);
-router.get("/tags/:id", controller.get_by_id);
+router.post("/tag/add", controller.add);
+router.put("/tag/:id/update", controller.update);
+router.delete("/tag/:id/delete", controller.delete);
+router.get("/tag/:id", controller.get_by_id);
 router.get("/tags", controller.get_all);
 
 module.exports = { model, controller, router };

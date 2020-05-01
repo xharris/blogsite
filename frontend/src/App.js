@@ -1,48 +1,86 @@
-import React, { useEffect, useState } from "react";
+import React, { useLayoutEffect, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "purecss";
 import "@style/index.scss";
 
-import { User } from "@util/db";
 import authContext from "@util/authContext";
+import { User } from "@util/db";
 import paths from "@util/url";
 
 import Home from "@page/home";
-import BrowseTutorials from "@page/browsetutorials";
-import Create from "@page/create";
-import TutorialView from "@page/tutorialview";
+import Explore from "@page/explore";
+import { BlogView } from "@page/blog";
+import MediaView from "@page/mediaview";
+
+import { SignInModal } from "@feature/signin";
+
+const Cookies = require("js-cookie");
+
+const login = e => {
+  console.log(e);
+  Cookies.set("user", e);
+  window.location.reload();
+};
+
+const logout = () => {
+  Cookies.remove("user");
+  window.location.reload();
+};
 
 const App = () => {
   const [user, setUser] = useState(null);
-  useEffect(() => {
-    (async () => {
-      // await User.get("1").then(user => {
-      //   setUser(user.data);
-      // });
-    })();
-  });
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    const ck_user = Cookies.get("user");
+    if (ck_user) {
+      (async () => {
+        await User.checkAuth(JSON.parse(ck_user).token)
+          .then(e => {
+            console.log("Auth success");
+            setUser(JSON.parse(ck_user));
+          })
+          .catch(e => {
+            console.error("Auth failed", e);
+            logout();
+          });
+      })();
+    }
+  }, []);
+
   return (
-    <authContext.Provider value={{ user: user }}>
+    <authContext.Provider
+      value={{
+        user: user,
+        showLoginModal: () => setLoginModalOpen(true),
+        logout: logout
+      }}
+    >
       <BrowserRouter className="app">
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path={paths.browse_followed_blogs()} component={Home} />
+          <Route exact path={paths.browse_blogs()} component={Explore} />
           <Route
-            exact
-            path={paths.browse_tutorials()}
-            component={BrowseTutorials}
-          />
-          <Route exact path="/create" component={Create} />
-          <Route
-            exact
-            path={paths.view_tutorial(":id")}
-            component={TutorialView}
+            path={paths.view_post(":blog_id", ":post_id", ":action")}
+            component={BlogView}
           />
           <Route
-            exact
-            path={paths.view_tutorial(":id", ":action")}
-            component={TutorialView}
+            path={paths.view_post(":blog_id", ":post_id")}
+            component={BlogView}
           />
+          <Route
+            path={paths.view_blog(":blog_id", ":action")}
+            component={BlogView}
+          />
+          <Route path={paths.view_blog(":blog_id")} component={BlogView} />
+          <Route path={paths.view_media(":media_id")} component={MediaView} />
         </Switch>
+
+        <SignInModal
+          is_open={loginModalOpen}
+          onClose={() => setLoginModalOpen(false)}
+          onSignIn={login}
+        />
       </BrowserRouter>
     </authContext.Provider>
   );

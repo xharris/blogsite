@@ -1,6 +1,6 @@
 @import "variables";
 
-button {
+.f-button {
   font-size: 12px;
   padding: 3px 6px;
   border: none;
@@ -8,8 +8,13 @@ button {
   border-radius: 2px;
   color: white;
   font-weight: 500;
-  min-width: 50px;
   border: 1px solid transparent;
+
+  display: flex;
+  align-items: flex-start;
+  background: transparent;
+  margin-right: 10px;
+  min-width: auto;
 
   transition: all $transition;
 
@@ -21,7 +26,26 @@ button {
     background-color: #90a4ae;
   }
 
-  &.round {
+  .material-icons {
+    font-size: 15px;
+  }
+
+  &:hover:not(.no-btn-children) .material-icons {
+    margin-right: 3px;
+  }
+
+  span {
+    overflow: hidden;
+    max-width: 0px;
+
+    transition: all ease-in-out 0.1s;
+  }
+
+  &:hover span {
+    max-width: 50px;
+  }
+
+  &.rounded {
     border-radius: 100%;
     width: 26px;
     height: 26px;
@@ -39,17 +63,17 @@ button {
 }
 
 .button-group {
-  > button {
+  > .f-button {
     border-radius: 0px;
 
     &:not(:first-child) {
       border-left-color: $button-border-color;
     }
   }
-  > button:first-child {
+  > .f-button:first-child {
     border-radius: 3px 0px 0px 3px;
   }
-  > button:last-child {
+  > .f-button:last-child {
     border-radius: 0px 3px 3px 0px;
     border-left-color: $button-border-color;
   }
