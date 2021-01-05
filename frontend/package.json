@@ -5,7 +5,7 @@
   "dependencies": {
     "@craco/craco": "^5.5.0",
     "@tinymce/tinymce-react": "^3.5.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "chokidar": "^3.3.1",
     "github-markdown-css": "^4.0.0",
