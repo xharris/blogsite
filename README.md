@@ -1,4 +1,4 @@
-# blogsite
+# blogsite (ARCHIVED)
 
 ## Setup
 
